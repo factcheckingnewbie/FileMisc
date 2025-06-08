@@ -1,4 +1,4 @@
-#include "filemanager.h"
+#include "QtFileManager.h"
 #include <QApplication>
 #include <QTreeView>
 #include <QListView>
@@ -18,8 +18,9 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QWidget>
+#include <stdexcept>
 
-FileManager::FileManager(QWidget *parent)
+QtFileManager::QtFileManager(QWidget *parent)
     : QMainWindow(parent)
     , m_centralWidget(nullptr)
     , m_mainSplitter(nullptr)
@@ -40,24 +41,23 @@ FileManager::FileManager(QWidget *parent)
         m_currentDirectory = QDir::homePath();
     }
     
-    setupUI();
-    setupModels();
+    try {
+        setupUI();
+        setupModels();
+    } catch (const std::exception& e) {
+        QMessageBox::critical(this, "Initialization Error", 
+                             QString("Failed to initialize application: %1").arg(e.what()));
+        close();
+    }
 }
 
-FileManager::~FileManager()
+QtFileManager::~QtFileManager()
 {
-    if (m_fileSystemModel) {
-        m_fileSystemModel->setParent(nullptr);
-    }
-    if (m_listModel1) {
-        m_listModel1->setParent(nullptr);
-    }
-    if (m_listModel2) {
-        m_listModel2->setParent(nullptr);
-    }
+    // Qt's parent-child system will handle cleanup automatically
+    // No need to manually set parents to nullptr
 }
 
-void FileManager::setupUI()
+void QtFileManager::setupUI()
 {
     m_centralWidget = new QWidget(this);
     if (!m_centralWidget) {
@@ -153,7 +153,7 @@ void FileManager::setupUI()
     resize(800, 600);
 }
 
-void FileManager::setupModels()
+void QtFileManager::setupModels()
 {
     m_fileSystemModel = new QFileSystemModel(this);
     if (!m_fileSystemModel) {
@@ -171,7 +171,7 @@ void FileManager::setupModels()
     }
     
     connect(m_fileSystemModel, &QFileSystemModel::directoryLoaded,
-            this, &FileManager::onDirectoryLoaded);
+            this, &QtFileManager::onDirectoryLoaded);
     
     m_fileSystemModel->setRootPath(m_currentDirectory);
     
@@ -180,7 +180,7 @@ void FileManager::setupModels()
     m_listView2->setModel(m_listModel2);
 }
 
-void FileManager::onDirectoryLoaded(const QString &path)
+void QtFileManager::onDirectoryLoaded(const QString &path)
 {
     if (path == m_currentDirectory) {
         m_modelReady = true;
@@ -196,7 +196,7 @@ void FileManager::onDirectoryLoaded(const QString &path)
     }
 }
 
-void FileManager::connectSignals()
+void QtFileManager::connectSignals()
 {
     if (!m_modelReady) {
         return;
@@ -204,26 +204,26 @@ void FileManager::connectSignals()
     
     if (m_treeView && m_treeView->selectionModel()) {
         connect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
-                this, &FileManager::onTreeViewSelectionChanged);
+                this, &QtFileManager::onTreeViewSelectionChanged);
     }
     
     if (m_listView1 && m_listView1->selectionModel()) {
         connect(m_listView1->selectionModel(), &QItemSelectionModel::currentChanged,
-                this, &FileManager::onListView1SelectionChanged);
+                this, &QtFileManager::onListView1SelectionChanged);
     }
     
     if (m_executeButton) {
         connect(m_executeButton, &QPushButton::clicked,
-                this, &FileManager::onCommandExecuted);
+                this, &QtFileManager::onCommandExecuted);
     }
     
     if (m_commandBox) {
         connect(m_commandBox, &QLineEdit::returnPressed,
-                this, &FileManager::onCommandExecuted);
+                this, &QtFileManager::onCommandExecuted);
     }
 }
 
-void FileManager::onTreeViewSelectionChanged(const QModelIndex &index)
+void QtFileManager::onTreeViewSelectionChanged(const QModelIndex &index)
 {
     if (!validateModelIndex(index, m_fileSystemModel) || !m_modelReady) {
         return;
@@ -242,7 +242,7 @@ void FileManager::onTreeViewSelectionChanged(const QModelIndex &index)
     }
 }
 
-void FileManager::onListView1SelectionChanged(const QModelIndex &index)
+void QtFileManager::onListView1SelectionChanged(const QModelIndex &index)
 {
     if (!validateModelIndex(index, m_listModel1)) {
         return;
@@ -254,7 +254,7 @@ void FileManager::onListView1SelectionChanged(const QModelIndex &index)
     }
 }
 
-void FileManager::onCommandExecuted()
+void QtFileManager::onCommandExecuted()
 {
     if (!m_commandBox) {
         return;
@@ -269,11 +269,17 @@ void FileManager::onCommandExecuted()
     if (command.toLower() == "get filename" || command.toLower() == "getfilename") {
         if (!m_selectedFilename.isEmpty()) {
             updateListView2WithFilename(m_selectedFilename);
+        } else {
+            QMessageBox::information(this, "No Selection", 
+                                   "Please select a file from the list first.");
         }
+    } else {
+        QMessageBox::information(this, "Unknown Command", 
+                               QString("Unknown command: %1\n\nAvailable commands:\n- get filename").arg(command));
     }
 }
 
-void FileManager::updateListViews(const QString &directoryPath)
+void QtFileManager::updateListViews(const QString &directoryPath)
 {
     if (!m_listModel1 || !m_listModel2 || !validatePath(directoryPath)) {
         return;
@@ -290,7 +296,9 @@ void FileManager::updateListViews(const QString &directoryPath)
     QFileInfoList fileList;
     try {
         fileList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-    } catch (...) {
+    } catch (const std::exception&) {
+        QMessageBox::warning(this, "Directory Error", 
+                           "Failed to read directory contents.");
         return;
     }
     
@@ -311,7 +319,7 @@ void FileManager::updateListViews(const QString &directoryPath)
     }
 }
 
-void FileManager::updateListView2WithFilename(const QString &filename)
+void QtFileManager::updateListView2WithFilename(const QString &filename)
 {
     if (!m_listModel2 || filename.isEmpty()) {
         return;
@@ -322,15 +330,17 @@ void FileManager::updateListView2WithFilename(const QString &filename)
     QStandardItem *item = new QStandardItem(filename);
     if (item) {
         m_listModel2->appendRow(item);
+        QMessageBox::information(this, "Command Executed", 
+                               QString("Selected filename displayed: %1").arg(filename));
     }
 }
 
-bool FileManager::validateModelIndex(const QModelIndex &index, const QAbstractItemModel *expectedModel) const
+bool QtFileManager::validateModelIndex(const QModelIndex &index, const QAbstractItemModel *expectedModel) const
 {
     return index.isValid() && index.model() == expectedModel;
 }
 
-bool FileManager::validatePath(const QString &path) const
+bool QtFileManager::validatePath(const QString &path) const
 {
     if (path.isEmpty()) {
         return false;

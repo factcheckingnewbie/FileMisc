@@ -1,12 +1,16 @@
 #include <QApplication>
-#include "filemanager.h"
+#include "QtFileManager.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     
-    FileManager window;
-    window.show();
-    
-    return app.exec();
+    try {
+        QtFileManager window;
+        window.show();
+        
+        return app.exec();
+    } catch (const std::exception& e) {
+        return -1;
+    }
 }
