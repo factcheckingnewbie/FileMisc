@@ -1,5 +1,5 @@
-#ifndef QTFILEMANAGER_H
-#define QTFILEMANAGER_H
+#ifndef FILEMANAGER_H
+#define FILEMANAGER_H
 
 #include <QMainWindow>
 
@@ -16,16 +16,15 @@ class QStandardItemModel;
 class QModelIndex;
 class QWidget;
 class QLabel;
-class QAbstractItemModel;
 QT_END_NAMESPACE
 
-class QtFileManager : public QMainWindow
+class FileManager : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit QtFileManager(QWidget *parent = nullptr);
-    ~QtFileManager();
+    explicit FileManager(QWidget *parent = nullptr);
+    ~FileManager();
 
 private slots:
     void onTreeViewSelectionChanged(const QModelIndex &index);
@@ -61,4 +60,4 @@ private:
     bool m_modelReady;
 };
 
-#endif // QTFILEMANAGER_H
+#endif // FILEMANAGER_H

@@ -7,14 +7,11 @@ TEMPLATE = app
 
 SOURCES += \
     main.cpp \
-    QtFileManager.cpp
+    filemanager.cpp
 
 HEADERS += \
-    QtFileManager.h
+    filemanager.h
 
 # Additional configuration
 CONFIG += debug_and_release
 CONFIG += warn_on
-
-# Remove duplicate filemanager.cpp and filemanager.h references
-# Use only QtFileManager.cpp and QtFileManager.h for consistency
