@@ -1,5 +1,5 @@
-#ifndef FILEMANAGER_H
-#define FILEMANAGER_H
+#ifndef QTFILEMANAGER_H
+#define QTFILEMANAGER_H
 
 #include <QMainWindow>
 
@@ -13,6 +13,7 @@ class QHBoxLayout;
 class QSplitter;
 class QFileSystemModel;
 class QStandardItemModel;
+class QAbstractItemModel;
 class QModelIndex;
 class QWidget;
 class QLabel;
@@ -29,6 +30,7 @@ public:
 private slots:
     void onTreeViewSelectionChanged(const QModelIndex &index);
     void onListView1SelectionChanged(const QModelIndex &index);
+    void onListView2SelectionChanged(const QModelIndex &index);
     void onCommandExecuted();
     void onDirectoryLoaded(const QString &path);
 
@@ -38,6 +40,7 @@ private:
     void connectSignals();
     void updateListViews(const QString &directoryPath);
     void updateListView2WithFilename(const QString &filename);
+    void executeRenameCommand();
     bool validateModelIndex(const QModelIndex &index, const QAbstractItemModel *expectedModel) const;
     bool validatePath(const QString &path) const;
     
@@ -57,7 +60,8 @@ private:
     
     QString m_currentDirectory;
     QString m_selectedFilename;
+    QString m_selectedTargetFilename;
     bool m_modelReady;
 };
 
-#endif // FILEMANAGER_H
+#endif // QTFILEMANAGER_H

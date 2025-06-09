@@ -97,7 +97,7 @@ void FileManager::setupUI()
     
     commandLabel = new QLabel("Command:", this);
     commandLineEdit = new QLineEdit(this);
-    commandLineEdit->setPlaceholderText("Enter command (e.g., 'get filename')");
+    commandLineEdit->setPlaceholderText("Enter command (e.g., 'get filename', 'rename')");
     commandLineEdit->setText("get filename"); // Default command
     executeButton = new QPushButton("Execute", this);
     

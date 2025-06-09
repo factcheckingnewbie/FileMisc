@@ -1,4 +1,4 @@
-#include "filemanager.h"
+#include "QtFileManager.h"
 #include <QApplication>
 #include <QTreeView>
 #include <QListView>
@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QWidget>
+#include <QFile>
 
 FileManager::FileManager(QWidget *parent)
     : QMainWindow(parent)
@@ -34,6 +35,7 @@ FileManager::FileManager(QWidget *parent)
     , m_listModel2(nullptr)
     , m_currentDirectory(QDir::currentPath())
     , m_selectedFilename("")
+    , m_selectedTargetFilename("")
     , m_modelReady(false)
 {
     if (!validatePath(m_currentDirectory)) {
@@ -120,7 +122,7 @@ void FileManager::setupUI()
     if (!m_commandBox) {
         throw std::bad_alloc();
     }
-    m_commandBox->setPlaceholderText("Enter command (e.g., get filename)");
+    m_commandBox->setPlaceholderText("Enter command (e.g., get filename, rename)");
     
     m_executeButton = new QPushButton("Execute", this);
     if (!m_executeButton) {
@@ -212,6 +214,11 @@ void FileManager::connectSignals()
                 this, &FileManager::onListView1SelectionChanged);
     }
     
+    if (m_listView2 && m_listView2->selectionModel()) {
+        connect(m_listView2->selectionModel(), &QItemSelectionModel::currentChanged,
+                this, &FileManager::onListView2SelectionChanged);
+    }
+    
     if (m_executeButton) {
         connect(m_executeButton, &QPushButton::clicked,
                 this, &FileManager::onCommandExecuted);
@@ -254,6 +261,18 @@ void FileManager::onListView1SelectionChanged(const QModelIndex &index)
     }
 }
 
+void FileManager::onListView2SelectionChanged(const QModelIndex &index)
+{
+    if (!validateModelIndex(index, m_listModel2)) {
+        return;
+    }
+    
+    QStandardItem *item = m_listModel2->itemFromIndex(index);
+    if (item && !item->text().isEmpty()) {
+        m_selectedTargetFilename = item->text();
+    }
+}
+
 void FileManager::onCommandExecuted()
 {
     if (!m_commandBox) {
@@ -270,6 +289,11 @@ void FileManager::onCommandExecuted()
         if (!m_selectedFilename.isEmpty()) {
             updateListView2WithFilename(m_selectedFilename);
         }
+    } else if (command.toLower() == "rename") {
+        executeRenameCommand();
+    } else {
+        QMessageBox::information(this, "Command Info", 
+                                QString("Unknown command: %1\n\nAvailable commands:\n- get filename\n- rename").arg(command));
     }
 }
 
@@ -322,6 +346,65 @@ void FileManager::updateListView2WithFilename(const QString &filename)
     QStandardItem *item = new QStandardItem(filename);
     if (item) {
         m_listModel2->appendRow(item);
+    }
+}
+
+void FileManager::executeRenameCommand()
+{
+    // Check if a file is selected in listView1
+    if (m_selectedFilename.isEmpty()) {
+        QMessageBox::warning(this, "No Selection", "Please select a file from the left list view first.");
+        return;
+    }
+    
+    // Check if a target filename is selected in listView2
+    if (m_selectedTargetFilename.isEmpty()) {
+        QMessageBox::warning(this, "No Target Selection", "Please select a target filename from the right list view.");
+        return;
+    }
+    
+    // Check if source and target filenames are the same
+    if (m_selectedFilename == m_selectedTargetFilename) {
+        QMessageBox::information(this, "No Change", "Source and target filenames are the same. No action needed.");
+        return;
+    }
+    
+    // Build the full file paths
+    QString sourceFilePath = m_currentDirectory + "/" + m_selectedFilename;
+    QString targetFilePath = m_currentDirectory + "/" + m_selectedTargetFilename;
+    
+    // Check if source file exists
+    if (!QFile::exists(sourceFilePath)) {
+        QMessageBox::warning(this, "File Not Found", 
+                            QString("Source file '%1' not found.").arg(m_selectedFilename));
+        return;
+    }
+    
+    // Check if target file already exists
+    if (QFile::exists(targetFilePath)) {
+        QMessageBox::warning(this, "File Exists", 
+                            QString("A file with the name '%1' already exists in this directory.").arg(m_selectedTargetFilename));
+        return;
+    }
+    
+    // Perform the rename operation
+    QFile sourceFile(sourceFilePath);
+    if (sourceFile.rename(targetFilePath)) {
+        // Rename successful
+        QMessageBox::information(this, "Rename Successful", 
+                                QString("File renamed from '%1' to '%2'").arg(m_selectedFilename, m_selectedTargetFilename));
+        
+        // Update both list views to reflect the change
+        updateListViews(m_currentDirectory);
+        
+        // Clear selections
+        m_selectedFilename.clear();
+        m_selectedTargetFilename.clear();
+        
+    } else {
+        // Rename failed
+        QMessageBox::critical(this, "Rename Failed", 
+                             QString("Failed to rename file from '%1' to '%2'. Please check file permissions and try again.").arg(m_selectedFilename, m_selectedTargetFilename));
     }
 }
 
