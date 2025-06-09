@@ -3,6 +3,8 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QHeaderView>
+#include <QEvent>
+#include <QApplication>
 
 FileManager::FileManager(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +18,7 @@ FileManager::FileManager(QWidget *parent)
     , listView1(nullptr)
     , listView2(nullptr)
     , fileSystemModel(nullptr)
+    , fileSystemModel2(nullptr)
     , customModel(nullptr)
     , commandWidget(nullptr)
     , commandLabel(nullptr)
@@ -44,6 +47,10 @@ void FileManager::setupUI()
     fileSystemModel = new QFileSystemModel(this);
     fileSystemModel->setRootPath(QDir::rootPath());
     
+    // Setup independent file system model for listView2
+    fileSystemModel2 = new QFileSystemModel(this);
+    fileSystemModel2->setRootPath(QDir::rootPath());
+    
     // Setup tree view (left panel)
     treeView = new QTreeView(this);
     treeView->setModel(fileSystemModel);
@@ -68,17 +75,19 @@ void FileManager::setupUI()
     listView1 = new QListView(this);
     listView1->setModel(fileSystemModel);
     listView1->setRootIndex(fileSystemModel->index(QDir::homePath()));
+    listView1->installEventFilter(this);
     listLayout1->addWidget(label1);
     listLayout1->addWidget(listView1);
     
-    // Setup ListView 2 with custom model
+    // Setup ListView 2 with independent file system model
     QWidget *listWidget2 = new QWidget(this);
     QVBoxLayout *listLayout2 = new QVBoxLayout(listWidget2);
     QLabel *label2 = new QLabel("Modified Files", this);
     label2->setStyleSheet("font-weight: bold; padding: 5px;");
-    customModel = new QStandardItemModel(this);
     listView2 = new QListView(this);
-    listView2->setModel(customModel);
+    listView2->setModel(fileSystemModel2);
+    listView2->setRootIndex(fileSystemModel2->index(QDir::homePath()));
+    listView2->installEventFilter(this);
     listLayout2->addWidget(label2);
     listLayout2->addWidget(listView2);
     
@@ -124,11 +133,12 @@ void FileManager::setupUI()
     // Connect signals
     connect(treeView, &QTreeView::clicked, this, &FileManager::onTreeViewClicked);
     connect(listView1, &QListView::clicked, this, &FileManager::onListView1Clicked);
+    connect(listView2, &QListView::clicked, this, &FileManager::onListView2Clicked);
     connect(executeButton, &QPushButton::clicked, this, &FileManager::onExecuteCommand);
     connect(commandLineEdit, &QLineEdit::returnPressed, this, &FileManager::onExecuteCommand);
     
-    // Initialize ListView2 with current directory
-    updateListView2();
+    // Set initial focus styles
+    updateFocusStyle();
 }
 
 void FileManager::onTreeViewClicked(const QModelIndex &index)
@@ -136,38 +146,52 @@ void FileManager::onTreeViewClicked(const QModelIndex &index)
     if (fileSystemModel->isDir(index)) {
         currentPath = fileSystemModel->filePath(index);
         listView1->setRootIndex(index);
-        updateListView2();
+        // Removed synchronization - listView2 now operates independently
     }
 }
 
 void FileManager::onListView1Clicked(const QModelIndex &index)
 {
     selectedFileIndex = index;
+    updateFocusStyle();
+}
+
+void FileManager::onListView2Clicked(const QModelIndex &index)
+{
+    // Handle directory navigation for independent listView2
+    if (fileSystemModel2->isDir(index)) {
+        listView2->setRootIndex(index);
+    }
+    updateFocusStyle();
 }
 
 void FileManager::updateListView2()
 {
-    customModel->clear();
-    customModel->setHorizontalHeaderLabels({"Modified Filename"});
+    // This method is no longer used for synchronization
+    // Keeping it for backward compatibility, but it does nothing
+    // ListView2 now operates independently with its own QFileSystemModel
+}
+
+void FileManager::updateFocusStyle()
+{
+    // Apply visual styling based on which list view has focus
+    QWidget *focusWidget = QApplication::focusWidget();
     
-    // Get current directory from ListView1
-    QModelIndex currentIndex = listView1->rootIndex();
-    if (!currentIndex.isValid()) {
-        currentIndex = fileSystemModel->index(QDir::homePath());
-    }
+    // Define styles for focused and unfocused states
+    QString focusedStyle = "QListView { border: 2px solid #4A90E2; background-color: #F0F8FF; }";
+    QString unfocusedStyle = "QListView { border: 1px solid #C0C0C0; background-color: white; }";
     
-    // Populate ListView2 with files from current directory
-    int rowCount = fileSystemModel->rowCount(currentIndex);
-    for (int i = 0; i < rowCount; ++i) {
-        QModelIndex childIndex = fileSystemModel->index(i, 0, currentIndex);
-        if (fileSystemModel->isDir(childIndex)) {
-            continue; // Skip directories for now
-        }
-        
-        QString fileName = fileSystemModel->fileName(childIndex);
-        QStandardItem *item = new QStandardItem(fileName);
-        item->setData(fileSystemModel->filePath(childIndex), Qt::UserRole);
-        customModel->appendRow(item);
+    // Apply styles based on focus
+    if (focusWidget == listView1) {
+        listView1->setStyleSheet(focusedStyle);
+        listView2->setStyleSheet(unfocusedStyle);
+    } else if (focusWidget == listView2) {
+        listView1->setStyleSheet(unfocusedStyle);
+        listView2->setStyleSheet(focusedStyle);
+    } else {
+        // Default state - show listView1 as focused initially
+        listView1->setStyleSheet(focusedStyle);
+        listView2->setStyleSheet(unfocusedStyle);
     }
 }
 
@@ -199,25 +223,18 @@ void FileManager::executeGetFilenameCommand()
         return;
     }
     
-    // Find corresponding item in ListView2 and update it
-    bool found = false;
-    for (int i = 0; i < customModel->rowCount(); ++i) {
-        QStandardItem *item = customModel->item(i);
-        if (item) {
-            QString originalPath = item->data(Qt::UserRole).toString();
-            if (originalPath == selectedFilePath) {
-                // Update the filename in ListView2 to match ListView1
-                item->setText(selectedFileName);
-                found = true;
-                break;
-            }
+    // Since ListView2 now uses QFileSystemModel instead of QStandardItemModel,
+    // we'll just show the filename that would be used
+    QMessageBox::information(this, "Command Executed", 
+                            QString("Selected filename from left list view: %1\n\nNote: The right list view now operates independently and doesn't sync with the left one.").arg(selectedFileName));
+}
+
+bool FileManager::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::FocusIn) {
+        if (obj == listView1 || obj == listView2) {
+            updateFocusStyle();
         }
     }
-    
-    if (found) {
-        QMessageBox::information(this, "Command Executed", 
-                                QString("Filename updated in right list view: %1").arg(selectedFileName));
-    } else {
-        QMessageBox::warning(this, "Error", "Could not find corresponding file in right list view.");
-    }
+    return QMainWindow::eventFilter(obj, event);
 }

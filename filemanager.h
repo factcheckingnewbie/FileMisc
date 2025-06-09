@@ -14,6 +14,7 @@
 #include <QStandardItemModel>
 #include <QLabel>
 #include <QModelIndex>
+#include <QEvent>
 
 class FileManager : public QMainWindow
 {
@@ -23,15 +24,20 @@ public:
     FileManager(QWidget *parent = nullptr);
     ~FileManager();
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
 private slots:
     void onTreeViewClicked(const QModelIndex &index);
     void onListView1Clicked(const QModelIndex &index);
+    void onListView2Clicked(const QModelIndex &index);
     void onExecuteCommand();
 
 private:
     void setupUI();
     void updateListView2();
     void executeGetFilenameCommand();
+    void updateFocusStyle();
 
     // UI Components
     QWidget *centralWidget;
@@ -48,6 +54,7 @@ private:
 
     // Models
     QFileSystemModel *fileSystemModel;
+    QFileSystemModel *fileSystemModel2;  // Independent model for listView2
     QStandardItemModel *customModel;
 
     // Command interface
