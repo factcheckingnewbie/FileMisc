@@ -16,7 +16,6 @@ FileManager::FileManager(QWidget *parent)
     , listView1(nullptr)
     , listView2(nullptr)
     , fileSystemModel(nullptr)
-    , customModel(nullptr)
     , commandWidget(nullptr)
     , commandLabel(nullptr)
     , commandLineEdit(nullptr)
@@ -68,17 +67,19 @@ void FileManager::setupUI()
     listView1 = new QListView(this);
     listView1->setModel(fileSystemModel);
     listView1->setRootIndex(fileSystemModel->index(QDir::homePath()));
+    listView1->setStyleSheet("QListView { border: 2px solid lightgray; } QListView:focus { border: 2px solid #0078d4; background-color: #f0f8ff; }");
     listLayout1->addWidget(label1);
     listLayout1->addWidget(listView1);
     
-    // Setup ListView 2 with custom model
+    // Setup ListView 2 (independent)
     QWidget *listWidget2 = new QWidget(this);
     QVBoxLayout *listLayout2 = new QVBoxLayout(listWidget2);
     QLabel *label2 = new QLabel("Modified Files", this);
     label2->setStyleSheet("font-weight: bold; padding: 5px;");
-    customModel = new QStandardItemModel(this);
     listView2 = new QListView(this);
-    listView2->setModel(customModel);
+    listView2->setModel(fileSystemModel);
+    listView2->setRootIndex(fileSystemModel->index(QDir::homePath()));
+    listView2->setStyleSheet("QListView { border: 2px solid lightgray; } QListView:focus { border: 2px solid #0078d4; background-color: #f0f8ff; }");
     listLayout2->addWidget(label2);
     listLayout2->addWidget(listView2);
     
@@ -126,49 +127,19 @@ void FileManager::setupUI()
     connect(listView1, &QListView::clicked, this, &FileManager::onListView1Clicked);
     connect(executeButton, &QPushButton::clicked, this, &FileManager::onExecuteCommand);
     connect(commandLineEdit, &QLineEdit::returnPressed, this, &FileManager::onExecuteCommand);
-    
-    // Initialize ListView2 with current directory
-    updateListView2();
 }
 
 void FileManager::onTreeViewClicked(const QModelIndex &index)
 {
     if (fileSystemModel->isDir(index)) {
         currentPath = fileSystemModel->filePath(index);
-        listView1->setRootIndex(index);
-        updateListView2();
+        // Views are now independent - no updates to list views
     }
 }
 
 void FileManager::onListView1Clicked(const QModelIndex &index)
 {
     selectedFileIndex = index;
-}
-
-void FileManager::updateListView2()
-{
-    customModel->clear();
-    customModel->setHorizontalHeaderLabels({"Modified Filename"});
-    
-    // Get current directory from ListView1
-    QModelIndex currentIndex = listView1->rootIndex();
-    if (!currentIndex.isValid()) {
-        currentIndex = fileSystemModel->index(QDir::homePath());
-    }
-    
-    // Populate ListView2 with files from current directory
-    int rowCount = fileSystemModel->rowCount(currentIndex);
-    for (int i = 0; i < rowCount; ++i) {
-        QModelIndex childIndex = fileSystemModel->index(i, 0, currentIndex);
-        if (fileSystemModel->isDir(childIndex)) {
-            continue; // Skip directories for now
-        }
-        
-        QString fileName = fileSystemModel->fileName(childIndex);
-        QStandardItem *item = new QStandardItem(fileName);
-        item->setData(fileSystemModel->filePath(childIndex), Qt::UserRole);
-        customModel->appendRow(item);
-    }
 }
 
 void FileManager::onExecuteCommand()
@@ -192,32 +163,13 @@ void FileManager::executeGetFilenameCommand()
     
     // Get the selected filename from ListView1
     QString selectedFileName = fileSystemModel->fileName(selectedFileIndex);
-    QString selectedFilePath = fileSystemModel->filePath(selectedFileIndex);
     
     if (selectedFileName.isEmpty()) {
         QMessageBox::warning(this, "Error", "Could not get filename from selection.");
         return;
     }
     
-    // Find corresponding item in ListView2 and update it
-    bool found = false;
-    for (int i = 0; i < customModel->rowCount(); ++i) {
-        QStandardItem *item = customModel->item(i);
-        if (item) {
-            QString originalPath = item->data(Qt::UserRole).toString();
-            if (originalPath == selectedFilePath) {
-                // Update the filename in ListView2 to match ListView1
-                item->setText(selectedFileName);
-                found = true;
-                break;
-            }
-        }
-    }
-    
-    if (found) {
-        QMessageBox::information(this, "Command Executed", 
-                                QString("Filename updated in right list view: %1").arg(selectedFileName));
-    } else {
-        QMessageBox::warning(this, "Error", "Could not find corresponding file in right list view.");
-    }
+    // Both list views are now independent - no cross-modification
+    QMessageBox::information(this, "Command Executed", 
+                            QString("Selected filename: %1\nNote: List views are now independent.").arg(selectedFileName));
 }

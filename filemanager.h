@@ -30,7 +30,6 @@ private slots:
 
 private:
     void setupUI();
-    void updateListView2();
     void executeGetFilenameCommand();
 
     // UI Components
@@ -48,7 +47,6 @@ private:
 
     // Models
     QFileSystemModel *fileSystemModel;
-    QStandardItemModel *customModel;
 
     // Command interface
     QWidget *commandWidget;
