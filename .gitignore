@@ -41,3 +41,12 @@ bak/
 .vscode/
 *.swp
 *.swo
+
+# Qt build files
+*.o
+moc_*
+Makefile*
+.qmake.stash
+release/
+debug/
+QtFileManager

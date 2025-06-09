@@ -26,12 +26,14 @@ public:
 private slots:
     void onTreeViewClicked(const QModelIndex &index);
     void onListView1Clicked(const QModelIndex &index);
+    void onListView2Clicked(const QModelIndex &index);
     void onExecuteCommand();
 
 private:
     void setupUI();
     void updateListView2();
     void executeGetFilenameCommand();
+    void executeRenameCommand();
 
     // UI Components
     QWidget *centralWidget;
@@ -59,6 +61,7 @@ private:
     // Current state
     QString currentPath;
     QModelIndex selectedFileIndex;
+    QModelIndex selectedModifiedFileIndex;
 };
 
 #endif // FILEMANAGER_H
