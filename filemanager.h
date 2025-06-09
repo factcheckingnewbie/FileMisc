@@ -40,22 +40,22 @@ private:
     QVBoxLayout *commandLayout;
     QSplitter *mainSplitter;
     QSplitter *rightSplitter;
-    
+
     // Views
     QTreeView *treeView;
     QListView *listView1;
     QListView *listView2;
-    
+
     // Models
     QFileSystemModel *fileSystemModel;
     QStandardItemModel *customModel;
-    
+
     // Command interface
     QWidget *commandWidget;
     QLabel *commandLabel;
     QLineEdit *commandLineEdit;
     QPushButton *executeButton;
-    
+
     // Current state
     QString currentPath;
     QModelIndex selectedFileIndex;
