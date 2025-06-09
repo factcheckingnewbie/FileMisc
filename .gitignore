@@ -41,3 +41,10 @@ bak/
 .vscode/
 *.swp
 *.swo
+
+# Qt build artifacts
+.qmake.stash
+Makefile*
+QtFileManager
+release/
+debug/
