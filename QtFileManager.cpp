@@ -76,7 +76,7 @@ void QtFileManager::setupUI()
     }
     m_treeView->setMinimumWidth(200);
     
-    m_rightSplitter = new QSplitter(Qt::Vertical, this);
+    m_rightSplitter = new QSplitter(Qt::Horizontal, this);
     if (!m_rightSplitter) {
         throw std::bad_alloc();
     }
@@ -173,7 +173,7 @@ void QtFileManager::setupModels()
     connect(m_fileSystemModel, &QFileSystemModel::directoryLoaded,
             this, &QtFileManager::onDirectoryLoaded);
     
-    m_fileSystemModel->setRootPath(m_currentDirectory);
+    m_fileSystemModel->setRootPath(QDir::rootPath());
     
     m_treeView->setModel(m_fileSystemModel);
     m_listView1->setModel(m_listModel1);
