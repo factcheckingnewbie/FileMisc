@@ -1,0 +1,85 @@
+You MUST check the list in realitime while you work.
+You must acknoweledge which step you are on. 
+If you do anything else, I have to tell you redo that step again.
+---
+# AI Agent Output Checklist for FileMisc/CommandMaster C++ Qt Project
+
+---
+
+## 1. Real File Fetch and Reference
+
+- [ ] Fetched all relevant files from the actual project source before making or proposing any changes.
+- [ ] Displayed references for every fetched file, including repository URL, branch, and commit hash or unique reference **above** each code block.
+
+---
+
+## 2. Full, Raw, Unfiltered File Content
+
+- [ ] Displayed the complete, unfiltered, and unsummarized content of every relevant file before proposing changes.
+  - No truncation, no summaries, no omission of content.
+ 
+---
+
+## 3.  Query the user about possible problems and sugges  actions.
+ 
+---
+
+Before contiue to next steep, If any problem, display your understanding of the problem.
+- [ ] Problem is <insert the problem>.
+- [ ] Method for diagnose the problem  <insert method>. 
+
+## 4. Analyze which code needs to be changed. 
+
+Output code data AT THE SAME TIME that you analyze it.
+Display your thought process during the analyze.
+
+- [ ] Analyze was done with method <Insert methods>  
+and further suggested steps are  <Insert suggesed steps before contiune to fix the problem.>.
+
+---
+
+## 5. Build/Validation Logs and Pause
+
+- [ ] Displayed complete build and/or validation logs for all relevant build or test operations in labeled code blocks (e.g., build.log, test.log).
+  - No summaries or truncation.
+- [ ] Paused and signaled: “Awaiting user approval before proceeding.”
+
+---
+
+## 6. Instruction Set Provenance
+
+- [ ] Fetched and displayed the full, raw instruction set or referenced policy file used to guide the changes, in a code block labeled with the filename and provenance (repo/branch/commit).
+
+---
+
+## 7. No Omission or Filtering
+
+- [ ] Did not omit or filter any intermediate steps, logs, reasoning, or outputs.
+  - Everything shown is full, raw, and unfiltered.
+
+---
+
+## 8. Error Handling
+
+- [ ] If a required step (fetch, display, log, instruction, etc.) fails, output a clearly labeled error block and stop all further actions.
+  - Example:
+    ```text name=error.txt
+    Could not fetch file: src/mainwindow.cpp (file not found in repo)
+    No further actions taken.
+    ```
+
+---
+
+## 9. Step-by-Step Reasoning
+
+- [ ] Displayed a reasoning log detailing every action taken, in order, as a plain text code block (reasoning.txt).
+
+---
+
+## 10. Explicit List of All Files and Logs
+
+- [ ] At the top of the output, provided a bullet list of every file and log included, matching all blocks below.
+
+---
+You are not allowed to simulate any step  in any task.
+

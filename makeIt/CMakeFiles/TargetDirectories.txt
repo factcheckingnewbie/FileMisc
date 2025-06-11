@@ -1,0 +1,5 @@
+/home/ptr/Developement/guided/FilemanProjects/FileMisc/makeIt/CMakeFiles/FileMisc.dir
+/home/ptr/Developement/guided/FilemanProjects/FileMisc/makeIt/CMakeFiles/edit_cache.dir
+/home/ptr/Developement/guided/FilemanProjects/FileMisc/makeIt/CMakeFiles/rebuild_cache.dir
+/home/ptr/Developement/guided/FilemanProjects/FileMisc/makeIt/CMakeFiles/FileMisc_autogen_timestamp_deps.dir
+/home/ptr/Developement/guided/FilemanProjects/FileMisc/makeIt/CMakeFiles/FileMisc_autogen.dir
