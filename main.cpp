@@ -7,7 +7,8 @@
 #include "FilePanel.h"
 
 // The TreeView is added as the leftmost widget in the splitter.
-// It uses its own QFileSystemModel, independent from the FilePanels.
+// It uses its own QFileSystemModel, always rooted at "/" (or QDir::rootPath()).
+// FilePanels can be at any subdirectory, but the TreeView always shows the full filesystem from root.
 // No synchronization logic yet, but code is structured to allow future improvements.
 // Future: Allow hiding/moving the TreeView via UI or settings.
 
@@ -20,12 +21,13 @@ int main(int argc, char *argv[])
 
     QSplitter *splitter = new QSplitter(&mainWin);
 
-    // TreeView setup (minimal, independent model)
+    // TreeView setup (single fixed root at "/")
     QTreeView *treeView = new QTreeView;
     QFileSystemModel *treeModel = new QFileSystemModel(treeView);
-    treeModel->setRootPath(QDir::rootPath());
+    QString treeRoot = QDir::rootPath(); // Always root ("/")
+    treeModel->setRootPath(treeRoot);
     treeView->setModel(treeModel);
-    treeView->setRootIndex(treeModel->index(QDir::rootPath()));
+    treeView->setRootIndex(treeModel->index(treeRoot));
     treeView->setHeaderHidden(true); // Optional minimalism
 
     // FilePanels (unchanged)
