@@ -1,5 +1,8 @@
 #include "FilePanel.h"
+#include <QDir>
 #include <QInputDialog>
+#include <KDirLister>
+#include <KDirLister>
 #include <KFileItem>
 #include <KIO/CopyJob>
 #include <KIO/StatJob>
@@ -7,10 +10,9 @@
 
 FilePanel::FilePanel(QWidget *parent)
     : QWidget(parent),
-      m_model(new QFileSystemModel(this)),
+      m_model(new KDirModel(this)),
       m_view(new QListView(this))
 {
-    m_model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::AllDirs);
     m_view->setModel(m_model);
     m_view->setSelectionMode(QAbstractItemView::SingleSelection);
     m_view->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -27,8 +29,8 @@ FilePanel::FilePanel(QWidget *parent)
 void FilePanel::setDirectory(const QUrl &url)
 {
     m_currentDir = url;
-    m_model->setRootPath(url.toLocalFile());
-    m_view->setRootIndex(m_model->index(url.toLocalFile()));
+    m_model->dirLister()->openUrl(url);
+    m_view->setRootIndex(m_model->indexForUrl(url));
     emit directoryChanged(url);
 }
 
@@ -42,8 +44,8 @@ QUrl FilePanel::selectedUrl() const
     QModelIndex idx = m_view->currentIndex();
     if (!idx.isValid())
         return {};
-    QString fileName = m_model->filePath(idx);
-    return QUrl::fromLocalFile(fileName);
+    KFileItem item = m_model->itemForIndex(idx);
+    return item.isNull() ? QUrl() : item.url();
 }
 
 void FilePanel::refresh()
@@ -55,9 +57,9 @@ void FilePanel::onActivated(const QModelIndex &index)
 {
     if (!index.isValid())
         return;
-    QFileInfo info(m_model->filePath(index));
-    if (info.isDir()) {
-        setDirectory(QUrl::fromLocalFile(info.absoluteFilePath()));
+    KFileItem item = m_model->itemForIndex(index);
+    if (item.isDir()) {
+        setDirectory(item.url());
     }
 }
 

@@ -2,7 +2,8 @@
 
 #include <QWidget>
 #include <QListView>
-#include <QFileSystemModel>
+#include <KDirLister>
+#include <KDirModel>
 #include <KIO/Job>
 #include <KIO/ListJob>
 #include <KIO/DeleteJob>
@@ -40,7 +41,7 @@ private slots:
     void onRenameFile();
 
 private:
-    QFileSystemModel *m_model;
+    KDirModel *m_model;
     QListView *m_view;
     QUrl m_currentDir;
 
