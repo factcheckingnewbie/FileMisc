@@ -28,12 +28,15 @@ int main(int argc, char *argv[])
     QTreeView *treeView = new QTreeView;
     KDirModel *treeModel = new KDirModel(treeView);
     KDirLister *treeLister = treeModel->dirLister();
+
+    // Make RootPath customizable by user.
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
     treeLister->openUrl(treeRootUrl);
     treeView->setModel(treeModel);
     treeView->setRootIndex(treeModel->indexForUrl(treeRootUrl));
     treeView->setHeaderHidden(true); // Optional minimalism
-
+    
+    treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);
     // FilePanels (unchanged)
     FilePanel *leftPanel = new FilePanel;
     FilePanel *rightPanel = new FilePanel;
