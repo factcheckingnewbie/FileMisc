@@ -7,13 +7,7 @@
 #include <KDirLister>
 #include "FilePanel.h"
 
-// The TreeView is added as the leftmost widget in the splitter.
-// It uses its own KDirModel, always rooted at "/" (or QDir::rootPath()).
-// FilePanels can be at any subdirectory, but the TreeView always shows the full filesystem from root.
-// No synchronization logic yet, but code is structured to allow future improvements.
-// Future: Allow hiding/moving the TreeView via UI or settings.
-
-// TODO: In future, make the tree root configurable by user.
+// Only KIO public API, per /usr/include/KF6/KIOWidgets/kdirmodel.h
 
 int main(int argc, char *argv[])
 {
@@ -27,17 +21,16 @@ int main(int argc, char *argv[])
     // TreeView setup (single fixed root at "/")
     QTreeView *treeView = new QTreeView;
     KDirModel *treeModel = new KDirModel(treeView);
-    KDirLister *treeLister = treeModel->dirLister();
 
-    // Make RootPath customizable by user.
+    // Only show directories in the TreeView using public KIO API
+    treeModel->dirLister()->setMimeFilter(QStringList() << "inode/directory");
+
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
-    treeLister->openUrl(treeRootUrl);
+    treeModel->dirLister()->openUrl(treeRootUrl);
     treeView->setModel(treeModel);
     treeView->setRootIndex(treeModel->indexForUrl(treeRootUrl));
     treeView->setHeaderHidden(true); // Optional minimalism
-    
-    treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);
-    // FilePanels (unchanged)
+
     FilePanel *leftPanel = new FilePanel;
     FilePanel *rightPanel = new FilePanel;
 

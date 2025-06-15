@@ -1,9 +1,5 @@
-You MUST check the list in realitime while you work.
-You must acknoweledge which step you are on. 
-If you do anything else, I have to tell you redo that step again.
----
 # AI Agent Output Checklist for FileMisc/CommandMaster C++ Qt Project
-
+ 
 ---
 
 ## 1. Real File Fetch and Reference
@@ -82,4 +78,7 @@ and further suggested steps are  <Insert suggesed steps before contiune to fix t
 
 ---
 You are not allowed to simulate any step  in any task.
-
+---
+You MUST check the list in realitime while you work.
+You must acknoweledge which step you are on. 
+If you do anything else, I have to tell you redo that step again.
