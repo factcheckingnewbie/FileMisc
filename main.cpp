@@ -7,6 +7,7 @@
 #include <KDirLister>
 #include "FilePanel.h"
 #include "DirOnlyProxyModel.h"
+
 // The TreeView is added as the leftmost widget in the splitter.
 // It uses its own KDirModel, always rooted at "/" (or QDir::rootPath()).
 // FilePanels can be at any subdirectory, but the TreeView always shows the full filesystem from root.
@@ -52,63 +53,9 @@ int main(int argc, char *argv[])
     leftPanel->setDirectory(QUrl::fromLocalFile(QDir::homePath()));
     rightPanel->setDirectory(QUrl::fromLocalFile(QDir::rootPath()));
 
-    splitter->addWidget(treeView);
-    splitter->addWidget(leftPanel);
-    splitter->addWidget(rightPanel);
-
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(splitter);
-    mainWin.setLayout(layout);
-    mainWin.resize(1200, 600);
-    mainWin.show();
-
-    return app.exec();
-#include <QApplication>
-#include <QHBoxLayout>
-#include <QSplitter>
-#include <QDir>
-#include <QTreeView>
-#include <KDirModel>
-#include <KDirLister>
-#include "FilePanel.h"
-#include "DirOnlyProxyModel.h" // ADD THIS LINE
-
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
-
-    QWidget mainWin;
-    mainWin.setWindowTitle("KIO Commander");
-
+    // MISSING: splitter definition! It must be created before use.
     QSplitter *splitter = new QSplitter(&mainWin);
 
-    // TreeView setup (single fixed root at "/")
-    QTreeView *treeView = new QTreeView;
-    KDirModel *treeModel = new KDirModel(treeView);
-    KDirLister *treeLister = treeModel->dirLister();
-
-    // PROXY MODEL FOR DIRECTORY-ONLY FILTER
-    DirOnlyProxyModel *dirOnlyProxy = new DirOnlyProxyModel(treeView);
-    dirOnlyProxy->setSourceModel(treeModel);
-
-    QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
-    treeLister->openUrl(treeRootUrl);
-
-    treeView->setModel(dirOnlyProxy);
-    QModelIndex treeRootIndex = treeModel->indexForUrl(treeRootUrl);
-    QModelIndex proxyRootIndex = dirOnlyProxy->mapFromSource(treeRootIndex);
-    treeView->setRootIndex(proxyRootIndex);
-
-    treeView->setHeaderHidden(true);
-
-    treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);
-
-    FilePanel *leftPanel = new FilePanel;
-    FilePanel *rightPanel = new FilePanel;
-
-    leftPanel->setDirectory(QUrl::fromLocalFile(QDir::homePath()));
-    rightPanel->setDirectory(QUrl::fromLocalFile(QDir::rootPath()));
-
     splitter->addWidget(treeView);
     splitter->addWidget(leftPanel);
     splitter->addWidget(rightPanel);
@@ -120,4 +67,4 @@ int main(int argc, char *argv[])
     mainWin.show();
 
     return app.exec();
-}}
+}
