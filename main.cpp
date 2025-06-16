@@ -30,43 +30,34 @@ int main(int argc, char *argv[])
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
     treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // <-- Show "/" as top node
     treeView->setModel(treeModel);
+    QModelIndex rootIndex = treeModel->indexForUrl(treeRootUrl);
+    treeView->setRootIndex(rootIndex);
     treeView->setHeaderHidden(true); // Optional minimalism
     treeView->resizeColumnToContents(0);
 
-    // Expand all ancestors down to $HOME after model is populated
-    QString homePath = QDir::homePath();
-    QUrl homeUrl = QUrl::fromLocalFile(homePath);
-
-    // Helper: expand recursively from root to $HOME
-    auto expandToHome = [=]() {
-        QModelIndex homeIndex = treeModel->indexForUrl(homeUrl);
-        if (!homeIndex.isValid()) {
-            qDebug() << "[DEBUG] expandToHome: homeIndex is not valid, skipping";
-            return;
+    // Expand root node "/" as soon as event loop starts (model will be populated)
+    QTimer::singleShot(0, treeView, [treeModel, treeView, treeRootUrl]() {
+        const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
+        if (currentRoot.isValid()) {
+            treeView->expand(currentRoot);
         }
-        // Expand all ancestors
-        QList<QModelIndex> toExpand;
-        QModelIndex idx = homeIndex;
-        while (idx.isValid()) {
-            toExpand.prepend(idx);
-            idx = idx.parent();
-        }
-        for (const QModelIndex &i : toExpand) {
-            treeView->expand(i);
-        }
-        treeView->scrollTo(homeIndex);
-        treeView->setCurrentIndex(homeIndex);
-    };
+    });
 
-    // Call expandToHome after event loop starts (model is likely populated)
-    QTimer::singleShot(0, treeView, expandToHome);
-
-    // Prevent user from collapsing the root node (always up-to-date)
+    // Prevent user from collapsing the root node, always fetch current rootIndex
     QObject::connect(treeView, &QTreeView::collapsed, treeView,
         [treeView, treeModel, treeRootUrl](const QModelIndex &idx) {
-            QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
+            const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
             if (idx == currentRoot) {
                 treeView->expand(currentRoot);
+            }
+        }
+    );
+
+    // Ensure root expands as soon as children are loaded
+    QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView,
+        [treeView, rootIndex](const QModelIndex &parent, int, int) {
+            if (parent == rootIndex) {
+                treeView->expand(rootIndex);
             }
         }
     );
