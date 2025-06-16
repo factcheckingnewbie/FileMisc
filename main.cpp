@@ -28,9 +28,20 @@ int main(int argc, char *argv[])
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
     treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // <-- Show "/" as top node
     treeView->setModel(treeModel);
-    treeView->setRootIndex(treeModel->indexForUrl(treeRootUrl));
-    treeView->setHeaderHidden(true); // Optional minimalism
-    treeView->resizeColumnToContents(0);
+     QModelIndex rootIndex = treeModel->indexForUrl(treeRootUrl);
+    treeView->setRootIndex(rootIndex);
+
+   treeView->setHeaderHidden(true); // Optional minimalism
+   treeView->resizeColumnToContents(0);
+    // Always expand the root node ("/")
+    treeView->expand(rootIndex);
+
+    // Prevent user from collapsing the root node
+    QObject::connect(treeView, &QTreeView::collapsed, treeView, [treeView, rootIndex](const QModelIndex &idx) {
+        if (idx == rootIndex) {
+            treeView->expand(rootIndex);
+        }
+    });
 
     // Auto-resize on expand/collapse
     QObject::connect(treeView, &QTreeView::expanded, treeView, [treeView](const QModelIndex &) {
