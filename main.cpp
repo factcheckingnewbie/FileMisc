@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
     treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // <-- Show "/" as top node
     treeView->setModel(treeModel);
-
     treeView->setHeaderHidden(true); // Optional minimalism
     treeView->resizeColumnToContents(0);
 
@@ -41,9 +40,6 @@ int main(int argc, char *argv[])
     // Helper: expand recursively from root to $HOME
     auto expandToHome = [=]() {
         QModelIndex homeIndex = treeModel->indexForUrl(homeUrl);
-        qDebug() << "[DEBUG] expandToHome: homeUrl =" << homeUrl.toString();
-        qDebug() << "  homeIndex.isValid() =" << homeIndex.isValid();
-        qDebug() << "  homeIndex data =" << homeIndex.data().toString();
         if (!homeIndex.isValid()) {
             qDebug() << "[DEBUG] expandToHome: homeIndex is not valid, skipping";
             return;
@@ -57,11 +53,9 @@ int main(int argc, char *argv[])
         }
         for (const QModelIndex &i : toExpand) {
             treeView->expand(i);
-            qDebug() << "[DEBUG] expandToHome: expanding" << i.data().toString();
         }
         treeView->scrollTo(homeIndex);
         treeView->setCurrentIndex(homeIndex);
-        qDebug() << "[DEBUG] expandToHome: scrolled and selected $HOME";
     };
 
     // Call expandToHome after event loop starts (model is likely populated)
@@ -73,7 +67,6 @@ int main(int argc, char *argv[])
             QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
             if (idx == currentRoot) {
                 treeView->expand(currentRoot);
-                qDebug() << "[DEBUG] User tried to collapse root; re-expanded.";
             }
         }
     );
