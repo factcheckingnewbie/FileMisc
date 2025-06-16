@@ -13,9 +13,9 @@
 
 int main(int argc, char *argv[])
 {
-    qDebug() << "=== Application started ===";
 
     QApplication app(argc, argv);
+    qDebug() << "=== Application started ===";
 
     QWidget mainWin;
     mainWin.setWindowTitle("KIO Commander");
@@ -44,8 +44,23 @@ int main(int argc, char *argv[])
     qDebug() << "[DEBUG] Reached before app.exec()";
 
     // Explicit QTimer test for unconditional debug
-    QTimer::singleShot(0, treeView, []() {
-        qDebug() << "[DEBUG] QTimer fired (unconditional test)";
+    QTimer::singleShot(0, treeView, [treeModel, treeView]() {
+        QString homePath = QDir::homePath();
+        QUrl homeUrl = QUrl::fromLocalFile(homePath);
+        QModelIndex homeIndex = treeModel->indexForUrl(homeUrl);
+
+        qDebug() << "[DEBUG] QTimer fired. Attempting to expand to home:" << homeUrl.toString();
+        qDebug() << "[DEBUG] homeIndex.isValid() =" << homeIndex.isValid();
+        qDebug() << "[DEBUG] homeIndex.data =" << homeIndex.data().toString();
+
+        // Expand all ancestors up to home
+        QModelIndex idx = homeIndex;
+        while (idx.isValid()) {
+            treeView->expand(idx);
+            idx = idx.parent();
+        }
+        treeView->scrollTo(homeIndex);
+        treeView->setCurrentIndex(homeIndex);
     });
 
     // Model signals for debug
