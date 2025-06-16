@@ -13,6 +13,8 @@
 
 int main(int argc, char *argv[])
 {
+    qDebug() << "=== Application started ===";
+
     QApplication app(argc, argv);
 
     QWidget mainWin;
