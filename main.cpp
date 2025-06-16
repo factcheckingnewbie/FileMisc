@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
     treeModel->dirLister()->setMimeFilter(QStringList() << "inode/directory");
 
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
-    treeModel->dirLister()->openUrl(treeRootUrl);
     treeView->setModel(treeModel);
     treeView->setRootIndex(treeModel->indexForUrl(treeRootUrl));
     treeView->setHeaderHidden(true); // Optional minimalism
