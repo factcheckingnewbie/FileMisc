@@ -28,22 +28,30 @@ int main(int argc, char *argv[])
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
     treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // <-- Show "/" as top node
     treeView->setModel(treeModel);
-     QModelIndex rootIndex = treeModel->indexForUrl(treeRootUrl);
-    treeView->setRootIndex(rootIndex);
+    QModelIndex rootIndex = treeModel->indexForUrl(treeRootUrl);
+//    treeView->setRootIndex(rootIndex);
 
    treeView->setHeaderHidden(true); // Optional minimalism
    treeView->resizeColumnToContents(0);
-    // Always expand the root node ("/")
-    treeView->expand(rootIndex);
+
+    // Ensure root expands as soon as children are loaded
+    QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView,
+        [treeView, rootIndex](const QModelIndex &parent, int, int) {
+            if (parent == rootIndex) {
+                treeView->expand(rootIndex);
+            }
+        }
+    );
 
     // Prevent user from collapsing the root node
-    QObject::connect(treeView, &QTreeView::collapsed, treeView, [treeView, rootIndex](const QModelIndex &idx) {
-        if (idx == rootIndex) {
-            treeView->expand(rootIndex);
+    QObject::connect(treeView, &QTreeView::collapsed, treeView,
+        [treeView, rootIndex](const QModelIndex &idx) {
+            if (idx == rootIndex) {
+                treeView->expand(rootIndex);
+            }
         }
-    });
-
-    // Auto-resize on expand/collapse
+    );
+   // Auto-resize on expand/collapse
     QObject::connect(treeView, &QTreeView::expanded, treeView, [treeView](const QModelIndex &) {
         treeView->resizeColumnToContents(0);
     });
