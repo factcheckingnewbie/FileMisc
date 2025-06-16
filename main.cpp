@@ -43,26 +43,14 @@ int main(int argc, char *argv[])
  
     qDebug() << "[DEBUG] Reached before app.exec()";
 
-    // Explicit QTimer test for unconditional debug
-    QTimer::singleShot(0, treeView, [treeModel, treeView]() {
-        QString homePath = QDir::homePath();
-        QUrl homeUrl = QUrl::fromLocalFile(homePath);
-        QModelIndex homeIndex = treeModel->indexForUrl(homeUrl);
-
-        qDebug() << "[DEBUG] QTimer fired. Attempting to expand to home:" << homeUrl.toString();
-        qDebug() << "[DEBUG] homeIndex.isValid() =" << homeIndex.isValid();
-        qDebug() << "[DEBUG] homeIndex.data =" << homeIndex.data().toString();
-
-        // Expand all ancestors up to home
-        QModelIndex idx = homeIndex;
-        while (idx.isValid()) {
-            treeView->expand(idx);
-            idx = idx.parent();
-        }
-        treeView->scrollTo(homeIndex);
-        treeView->setCurrentIndex(homeIndex);
-    });
-
+     // Prevent user from collapsing the root node
+     QObject::connect(treeView, &QTreeView::collapsed, treeView,
+         [treeView, rootIndex](const QModelIndex &idx) {
+             if (idx == rootIndex) {
+                 treeView->expand(rootIndex);
+             }
+         }
+     );
     // Model signals for debug
     QObject::connect(treeModel, &QAbstractItemModel::layoutChanged, treeView, []() {
         qDebug() << "[DEBUG] layoutChanged signal fired.";
