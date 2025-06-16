@@ -30,6 +30,23 @@ int main(int argc, char *argv[])
     treeView->setModel(treeModel);
     treeView->setRootIndex(treeModel->indexForUrl(treeRootUrl));
     treeView->setHeaderHidden(true); // Optional minimalism
+    treeView->resizeColumnToContents(0);
+
+    // Auto-resize on expand/collapse
+    QObject::connect(treeView, &QTreeView::expanded, treeView, [treeView](const QModelIndex &) {
+        treeView->resizeColumnToContents(0);
+    });
+    QObject::connect(treeView, &QTreeView::collapsed, treeView, [treeView](const QModelIndex &) {
+        treeView->resizeColumnToContents(0);
+    });
+    
+    // Auto-resize on model changes (directory listing updates)
+    QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView, [treeView](const QModelIndex &, int, int) {
+        treeView->resizeColumnToContents(0);
+    });
+    QObject::connect(treeModel, &QAbstractItemModel::dataChanged, treeView, [treeView](const QModelIndex &, const QModelIndex &, const QVector<int> &) {
+        treeView->resizeColumnToContents(0);
+    });
 
     FilePanel *leftPanel = new FilePanel;
     FilePanel *rightPanel = new FilePanel;
