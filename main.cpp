@@ -7,6 +7,8 @@
 #include <KDirLister>
 #include <QTimer>
 #include <QDebug>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "FilePanel.h"
 
 // Only KIO public API, per /usr/include/KF6/KIOWidgets/kdirmodel.h
@@ -17,6 +19,12 @@ int main(int argc, char *argv[])
 
     QWidget mainWin;
     mainWin.setWindowTitle("KIO Commander");
+
+    // Create button and layout for top row
+    QPushButton *expandHomeButton = new QPushButton("Expand to $HOME");
+    QHBoxLayout *topRowLayout = new QHBoxLayout;
+    topRowLayout->addWidget(expandHomeButton);
+    topRowLayout->addStretch();
 
     QSplitter *splitter = new QSplitter(&mainWin);
 
@@ -35,10 +43,10 @@ int main(int argc, char *argv[])
     treeView->setHeaderHidden(true); // Optional minimalism
     treeView->resizeColumnToContents(0);
 
-    // Expand from root to $HOME (auto-expand to show home) after event loop starts (model will be populated)
-    QString homePath = QDir::homePath();
-    QUrl homeUrl = QUrl::fromLocalFile(homePath);
-    QTimer::singleShot(0, treeView, [treeModel, treeView, homeUrl]() {
+    // MANUAL EXPANSION: connect button to existing (broken) expansion logic
+    QObject::connect(expandHomeButton, &QPushButton::clicked, treeView, [treeModel, treeView]() {
+        QString homePath = QDir::homePath();
+        QUrl homeUrl = QUrl::fromLocalFile(homePath);
         QModelIndex idx = treeModel->indexForUrl(homeUrl);
         if (!idx.isValid()) {
             qDebug() << "[DEBUG] $HOME index not valid in tree!";
@@ -105,9 +113,11 @@ int main(int argc, char *argv[])
     splitter->addWidget(leftPanel);
     splitter->addWidget(rightPanel);
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(splitter);
-    mainWin.setLayout(layout);
+    // Combine top row and splitter in a vertical layout
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(topRowLayout);
+    mainLayout->addWidget(splitter);
+    mainWin.setLayout(mainLayout);
     mainWin.resize(1200, 600);
     mainWin.show();
 
