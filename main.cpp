@@ -13,9 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-
     QApplication app(argc, argv);
-    qDebug() << "=== Application started ===";
 
     QWidget mainWin;
     mainWin.setWindowTitle("KIO Commander");
@@ -41,43 +39,6 @@ int main(int argc, char *argv[])
      qDebug() << "  rootIndex data =" << rootIndex.data().toString();
      qDebug() << "  rootIndex internalId =" << rootIndex.internalId();
  
-    qDebug() << "[DEBUG] Reached before app.exec()";
-
-     // Prevent user from collapsing the root node
-     QObject::connect(treeView, &QTreeView::collapsed, treeView,
-         [treeView, rootIndex](const QModelIndex &idx) {
-             if (idx == rootIndex) {
-                 treeView->expand(rootIndex);
-             }
-         }
-     );
-    // Model signals for debug
-    QObject::connect(treeModel, &QAbstractItemModel::layoutChanged, treeView, []() {
-        qDebug() << "[DEBUG] layoutChanged signal fired.";
-    });
-    QObject::connect(treeModel, &QAbstractItemModel::modelReset, treeView, []() {
-        qDebug() << "[DEBUG] modelReset signal fired.";
-    });
-
-    // Try expanding root after layoutChanged/modelReset
-    QObject::connect(treeModel, &QAbstractItemModel::layoutChanged, treeView, [treeModel, treeView, treeRootUrl]() {
-        const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
-        qDebug() << "[DEBUG] layoutChanged handler: trying expand";
-        qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
-        if (currentRoot.isValid()) {
-            treeView->expand(currentRoot);
-            qDebug() << "[DEBUG] Expanded currentRoot in layoutChanged";
-        }
-    });
-    QObject::connect(treeModel, &QAbstractItemModel::modelReset, treeView, [treeModel, treeView, treeRootUrl]() {
-        const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
-        qDebug() << "[DEBUG] modelReset handler: trying expand";
-        qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
-        if (currentRoot.isValid()) {
-            treeView->expand(currentRoot);
-            qDebug() << "[DEBUG] Expanded currentRoot in modelReset";
-        }
-    });
      // Expand root node "/" as soon as event loop starts (model will be populated)
      QTimer::singleShot(0, treeView, [treeModel, treeView, treeRootUrl]() {
          const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
