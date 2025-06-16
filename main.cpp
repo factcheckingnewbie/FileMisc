@@ -5,6 +5,8 @@
 #include <QTreeView>
 #include <KDirModel>
 #include <KDirLister>
+#include <QTimer>
+#include <QDebug>
 #include "FilePanel.h"
 
 // Only KIO public API, per /usr/include/KF6/KIOWidgets/kdirmodel.h
@@ -32,6 +34,61 @@ int main(int argc, char *argv[])
      treeView->setRootIndex(rootIndex);
      treeView->setHeaderHidden(true); // Optional minimalism
      treeView->resizeColumnToContents(0);
+     qDebug() << "[DEBUG] After setRootIndex:";
+     qDebug() << "  rootIndex.isValid() =" << rootIndex.isValid();
+     qDebug() << "  rootIndex data =" << rootIndex.data().toString();
+     qDebug() << "  rootIndex internalId =" << rootIndex.internalId();
+ 
+     // Expand root node "/" as soon as event loop starts (model will be populated)
+     QTimer::singleShot(0, treeView, [treeModel, treeView, treeRootUrl]() {
+         const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
+         qDebug() << "[DEBUG] QTimer::singleShot fired. Attempting to expand root.";
+         qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
+         qDebug() << "  currentRoot data =" << currentRoot.data().toString();
+         qDebug() << "  currentRoot internalId =" << currentRoot.internalId();
+         if (currentRoot.isValid()) {
+             treeView->expand(currentRoot);
+             qDebug() << "[DEBUG] Called expand(currentRoot) in QTimer";
+         } else {
+             qDebug() << "[DEBUG] currentRoot is invalid in QTimer";
+         }
+     });
+ 
+     // Signal: rowsInserted
+     QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView,
+         [treeView, treeModel, treeRootUrl](const QModelIndex &parent, int first, int last) {
+             const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
+             qDebug() << "[DEBUG] rowsInserted signal fired.";
+             qDebug() << "  parent.isValid() =" << parent.isValid();
+             qDebug() << "  parent data =" << parent.data().toString();
+             qDebug() << "  parent internalId =" << parent.internalId();
+             qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
+             qDebug() << "  currentRoot data =" << currentRoot.data().toString();
+             qDebug() << "  currentRoot internalId =" << currentRoot.internalId();
+             if (parent == currentRoot) {
+                 treeView->expand(currentRoot);
+                 qDebug() << "[DEBUG] Expanded currentRoot in rowsInserted";
+             }
+         }
+     );
+ 
+     // Prevent user from collapsing the root node, always fetch current rootIndex
+     QObject::connect(treeView, &QTreeView::collapsed, treeView,
+         [treeView, treeModel, treeRootUrl](const QModelIndex &idx) {
+             const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
+             qDebug() << "[DEBUG] collapsed signal fired.";
+             qDebug() << "  idx.isValid() =" << idx.isValid();
+             qDebug() << "  idx data =" << idx.data().toString();
+             qDebug() << "  idx internalId =" << idx.internalId();
+             qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
+             qDebug() << "  currentRoot data =" << currentRoot.data().toString();
+             qDebug() << "  currentRoot internalId =" << currentRoot.internalId();
+             if (idx == currentRoot) {
+                 treeView->expand(currentRoot);
+                 qDebug() << "[DEBUG] Re-expanded currentRoot after collapse";
+             }
+         }
+     );
      // Ensure root expands as soon as children are loaded
      QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView,
          [treeView, rootIndex](const QModelIndex &parent, int, int) {
