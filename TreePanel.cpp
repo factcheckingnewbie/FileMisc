@@ -5,6 +5,7 @@
 #include <KDirLister>
 #include <QVBoxLayout>
 #include <KFileItemDelegate>
+#include <QFileInfo>
 
 TreePanel::TreePanel(QWidget *parent)
     : QWidget(parent)
@@ -108,5 +109,35 @@ TreePanel::TreePanel(QWidget *parent)
         KFileItem item = m_treeModel->itemForIndex(index);
         if (item.isDir())
             emit directorySelected(item.url());
+    });
+}
+
+void TreePanel::navigateToPath(const QUrl &url)
+{
+    qDebug() << "[DEBUG] TreePanel::navigateToPath called with:" << url.toString();
+    
+    // Simple validation - just check if it's a real path
+    QString path = url.toLocalFile();
+    QFileInfo fileInfo(path);
+    
+    if (!fileInfo.exists() || !fileInfo.isDir()) {
+        qDebug() << "[WARNING] Path does not exist or is not a directory:" << path;
+        qDebug() << "[WARNING] Navigation aborted. Please provide a valid directory path.";
+        return;
+    }
+    
+    // Simple approach: use KDirModel's expandToUrl and then select
+    m_treeModel->expandToUrl(url);
+    
+    // Wait a bit for model to load, then select and scroll
+    QTimer::singleShot(500, this, [this, url]() {
+        QModelIndex targetIndex = m_treeModel->indexForUrl(url);
+        if (targetIndex.isValid()) {
+            m_treeView->setCurrentIndex(targetIndex);
+            m_treeView->scrollTo(targetIndex, QAbstractItemView::PositionAtCenter);
+            qDebug() << "[DEBUG] Navigation complete to:" << url.toString();
+        } else {
+            qDebug() << "[WARNING] Could not find index for path:" << url.toString();
+        }
     });
 }
