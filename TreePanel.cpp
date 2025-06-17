@@ -1,28 +1,94 @@
-#pragma once
+#include "TreePanel.h"
+#include <QDir>
+#include <QTimer>
+#include <QDebug>
+#include <KDirLister>
+#include <KFileItem>
 
-#include <QWidget>
-#include <QTreeView>
-#include <KDirModel>
-#include <QUrl>
-
-class TreePanel : public QWidget
+TreePanel::TreePanel(QWidget *parent)
+    : QWidget(parent),
+      m_treeView(new QTreeView(this)),
+      m_dirModel(new KDirModel(m_treeView)),
+      m_rootUrl(QUrl::fromLocalFile(QDir::rootPath()))
 {
-    Q_OBJECT
+    m_dirModel->dirLister()->setMimeFilter(QStringList() << "inode/directory");
 
-public:
-    explicit TreePanel(QWidget *parent = nullptr);
+    m_dirModel->openUrl(m_rootUrl, KDirModel::ShowRoot);
+    m_treeView->setModel(m_dirModel);
 
-    QUrl rootUrl() const;
-    KDirModel *model() const;
-    QTreeView *view() const;
+    QModelIndex rootIndex = m_dirModel->indexForUrl(m_rootUrl);
+    m_treeView->setRootIndex(rootIndex);
+    m_treeView->setHeaderHidden(true);
+    m_treeView->resizeColumnToContents(0);
 
-signals:
-    void directoryActivated(const QUrl &url);
+    qDebug() << "[TreePanel] After setRootIndex:";
+    qDebug() << "  rootIndex.isValid() =" << rootIndex.isValid();
+    qDebug() << "  rootIndex data =" << rootIndex.data().toString();
+    qDebug() << "  rootIndex internalId =" << rootIndex.internalId();
 
-private:
-    QTreeView *m_treeView;
-    KDirModel *m_dirModel;
-    QUrl m_rootUrl;
+    QTimer::singleShot(0, m_treeView, [this, rootIndex]() {
+        qDebug() << "[TreePanel] QTimer::singleShot fired. Expanding root.";
+        if (rootIndex.isValid()) {
+            m_treeView->expand(rootIndex);
+            qDebug() << "[TreePanel] Called expand(rootIndex)";
+        } else {
+            qDebug() << "[TreePanel] rootIndex is invalid in QTimer";
+        }
+    });
 
-    void setupDebugSignals();
-};
+    connect(m_treeView, &QTreeView::collapsed, this, [this, rootIndex](const QModelIndex &idx) {
+        if (idx == rootIndex) {
+            m_treeView->expand(rootIndex);
+            qDebug() << "[TreePanel] Re-expanded root after collapse";
+        }
+    });
+
+    connect(m_treeView, &QTreeView::expanded, this, [this](const QModelIndex &) {
+        m_treeView->resizeColumnToContents(0);
+    });
+    connect(m_treeView, &QTreeView::collapsed, this, [this](const QModelIndex &) {
+        m_treeView->resizeColumnToContents(0);
+    });
+
+    connect(m_treeView, &QTreeView::activated, this, [this](const QModelIndex &index) {
+        if (!index.isValid())
+            return;
+        KFileItem item = m_dirModel->itemForIndex(index);
+        if (item.isDir()) {
+            emit directoryActivated(item.url());
+        }
+    });
+
+    setupDebugSignals();
+}
+
+QUrl TreePanel::rootUrl() const
+{
+    return m_rootUrl;
+}
+
+KDirModel *TreePanel::model() const
+{
+    return m_dirModel;
+}
+
+QTreeView *TreePanel::view() const
+{
+    return m_treeView;
+}
+
+void TreePanel::setupDebugSignals()
+{
+    connect(m_dirModel, &QAbstractItemModel::rowsInserted, this,
+        [this](const QModelIndex &parent, int first, int last) {
+            qDebug() << "[TreePanel] rowsInserted:"
+                     << "parent.isValid() =" << parent.isValid()
+                     << "first =" << first << "last =" << last;
+        });
+    connect(m_dirModel, &QAbstractItemModel::layoutChanged, this, []() {
+        qDebug() << "[TreePanel] layoutChanged signal fired.";
+    });
+    connect(m_dirModel, &QAbstractItemModel::modelReset, this, []() {
+        qDebug() << "[TreePanel] modelReset signal fired.";
+    });
+}
