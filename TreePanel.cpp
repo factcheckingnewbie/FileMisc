@@ -5,139 +5,244 @@
 #include <KDirLister>
 #include <QVBoxLayout>
 #include <KFileItemDelegate>
-#include <QFileInfo>
 
 TreePanel::TreePanel(QWidget *parent)
     : QWidget(parent)
-    , m_treeView(new QTreeView(this))
-    , m_treeModel(new KDirModel(m_treeView))
+    , m_treeView(nullptr)
+    , m_treeModel(nullptr)
     , m_treeRootUrl(QUrl::fromLocalFile(QDir::rootPath()))
 {
+    try {
+        m_treeView = new QTreeView(this);
+        if (!m_treeView) {
+            qDebug() << "[ERROR] Failed to create QTreeView in TreePanel";
+            throw std::runtime_error("Failed to create QTreeView");
+        }
+        
+        m_treeModel = new KDirModel(m_treeView);
+        if (!m_treeModel) {
+            qDebug() << "[ERROR] Failed to create KDirModel in TreePanel";
+            throw std::runtime_error("Failed to create KDirModel");
+        }
+    } catch (const std::exception& e) {
+        qDebug() << "[ERROR] Exception in TreePanel constructor:" << e.what();
+        // Clean up if partially constructed
+        delete m_treeModel;
+        m_treeModel = nullptr;
+        delete m_treeView;
+        m_treeView = nullptr;
+        throw; // Re-throw to notify caller
+    } catch (...) {
+        qDebug() << "[ERROR] Unknown exception in TreePanel constructor";
+        delete m_treeModel;
+        m_treeModel = nullptr;
+        delete m_treeView;
+        m_treeView = nullptr;
+        throw;
+    }
+
     // Only show directories in the TreeView using public KIO API
-    m_treeModel->dirLister()->setMimeFilter(QStringList() << "inode/directory");
+    KDirLister* lister = m_treeModel->dirLister();
+    if (lister) {
+        lister->setMimeFilter(QStringList() << "inode/directory");
+    } else {
+        qDebug() << "[WARNING] dirLister() returned null";
+    }
 
     m_treeModel->openUrl(m_treeRootUrl, KDirModel::ShowRoot); // Show "/" as top node
     m_treeView->setModel(m_treeModel);
-    m_treeView->setItemDelegate(new KFileItemDelegate(m_treeView));
     
-    // Set root index after model is set
+    KFileItemDelegate* delegate = new KFileItemDelegate(m_treeView);
+    if (delegate) {
+        m_treeView->setItemDelegate(delegate);
+    } else {
+        qDebug() << "[WARNING] Failed to create KFileItemDelegate";
+    }
+    
     QModelIndex rootIndex = m_treeModel->indexForUrl(m_treeRootUrl);
     m_treeView->setRootIndex(rootIndex);
     m_treeView->setHeaderHidden(true); // Optional minimalism
     m_treeView->resizeColumnToContents(0);
 
-    qDebug() << "[DEBUG] TreePanel initialized:";
+    qDebug() << "[DEBUG] After setRootIndex:";
     qDebug() << "  rootIndex.isValid() =" << rootIndex.isValid();
     qDebug() << "  rootIndex data =" << rootIndex.data().toString();
+    qDebug() << "  rootIndex internalId =" << rootIndex.internalId();
 
-    // PRIMARY METHOD: Connect to KDirLister's completed signal to expand root when fully loaded
-    QObject::connect(m_treeModel->dirLister(), 
-        static_cast<void(KDirLister::*)()>(&KDirLister::completed), 
-        this,
+    qDebug() << "[DEBUG] Reached before event loop in TreePanel";
+
+    // Explicit QTimer test for unconditional debug
+    QTimer::singleShot(0, m_treeView, []() {
+        qDebug() << "[DEBUG] QTimer fired (unconditional test)";
+    });
+
+    // Model signals for debug
+    QObject::connect(m_treeModel, &QAbstractItemModel::layoutChanged, m_treeView, []() {
+        qDebug() << "[DEBUG] layoutChanged signal fired.";
+    });
+    QObject::connect(m_treeModel, &QAbstractItemModel::modelReset, m_treeView, []() {
+        qDebug() << "[DEBUG] modelReset signal fired.";
+    });
+
+    // Try expanding root after layoutChanged/modelReset
+    QObject::connect(m_treeModel, &QAbstractItemModel::layoutChanged, m_treeView,
         [this]() {
+            if (!m_treeModel) {
+                qDebug() << "[ERROR] m_treeModel is null in layoutChanged handler";
+                return;
+            }
             const QModelIndex currentRoot = m_treeModel->indexForUrl(m_treeRootUrl);
-            qDebug() << "[DEBUG] KDirLister completed. Checking root expansion.";
+            qDebug() << "[DEBUG] layoutChanged handler: trying expand";
             qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
-            qDebug() << "  currentRoot.hasChildren() =" << m_treeModel->hasChildren(currentRoot);
-            qDebug() << "  currentRoot.isExpanded() =" << m_treeView->isExpanded(currentRoot);
-            qDebug() << "  rowCount =" << m_treeModel->rowCount(currentRoot);
-            
-            // Only expand if valid, has children, and not already expanded
-            if (currentRoot.isValid() && 
-                m_treeModel->hasChildren(currentRoot) && 
-                !m_treeView->isExpanded(currentRoot)) {
+            if (currentRoot.isValid() && m_treeView) {
                 m_treeView->expand(currentRoot);
-                qDebug() << "[DEBUG] Expanded root after KDirLister completed";
+                qDebug() << "[DEBUG] Expanded currentRoot in layoutChanged";
+            }
+        });
+    QObject::connect(m_treeModel, &QAbstractItemModel::modelReset, m_treeView,
+        [this]() {
+            if (!m_treeModel) {
+                qDebug() << "[ERROR] m_treeModel is null in modelReset handler";
+                return;
+            }
+            const QModelIndex currentRoot = m_treeModel->indexForUrl(m_treeRootUrl);
+            qDebug() << "[DEBUG] modelReset handler: trying expand";
+            qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
+            if (currentRoot.isValid() && m_treeView) {
+                m_treeView->expand(currentRoot);
+                qDebug() << "[DEBUG] Expanded currentRoot in modelReset";
             }
         });
 
-    // FALLBACK METHOD: QTimer as safety net if KDirLister signal fails
-    QTimer::singleShot(200, this, [this]() {
+    // Expand root node "/" as soon as event loop starts (model will be populated)
+    QTimer::singleShot(0, m_treeView, [this]() {
+        if (!m_treeModel) {
+            qDebug() << "[ERROR] m_treeModel is null in QTimer handler";
+            return;
+        }
         const QModelIndex currentRoot = m_treeModel->indexForUrl(m_treeRootUrl);
-        qDebug() << "[DEBUG] QTimer fallback check:";
+        qDebug() << "[DEBUG] QTimer::singleShot fired. Attempting to expand root.";
         qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
-        qDebug() << "  currentRoot.hasChildren() =" << m_treeModel->hasChildren(currentRoot);
-        qDebug() << "  currentRoot.isExpanded() =" << m_treeView->isExpanded(currentRoot);
-        
-        // Only expand if valid, has children, and not already expanded
-        if (currentRoot.isValid() && 
-            m_treeModel->hasChildren(currentRoot) && 
-            !m_treeView->isExpanded(currentRoot)) {
+        qDebug() << "  currentRoot data =" << currentRoot.data().toString();
+        qDebug() << "  currentRoot internalId =" << currentRoot.internalId();
+        if (currentRoot.isValid() && m_treeView) {
             m_treeView->expand(currentRoot);
-            qDebug() << "[DEBUG] Expanded root via QTimer fallback";
+            qDebug() << "[DEBUG] Called expand(currentRoot) in QTimer";
+        } else {
+            qDebug() << "[DEBUG] currentRoot is invalid or m_treeView is null in QTimer";
         }
     });
 
-    // Prevent user from collapsing the root node
-    QObject::connect(m_treeView, &QTreeView::collapsed, this,
-        [this](const QModelIndex &idx) {
+    // Signal: rowsInserted
+    QObject::connect(m_treeModel, &QAbstractItemModel::rowsInserted, m_treeView,
+        [this](const QModelIndex &parent, int first, int last) {
+            if (!m_treeModel) {
+                qDebug() << "[ERROR] m_treeModel is null in rowsInserted handler";
+                return;
+            }
             const QModelIndex currentRoot = m_treeModel->indexForUrl(m_treeRootUrl);
-            
-            // Check both direct comparison and by URL
-            if (idx == currentRoot || m_treeModel->itemForIndex(idx).url() == m_treeRootUrl) {
-                qDebug() << "[DEBUG] Root collapse prevented, re-expanding";
+            qDebug() << "[DEBUG] rowsInserted signal fired.";
+            qDebug() << "  parent.isValid() =" << parent.isValid();
+            qDebug() << "  parent data =" << parent.data().toString();
+            qDebug() << "  parent internalId =" << parent.internalId();
+            qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
+            qDebug() << "  currentRoot data =" << currentRoot.data().toString();
+            qDebug() << "  currentRoot internalId =" << currentRoot.internalId();
+            if (parent == currentRoot && m_treeView) {
                 m_treeView->expand(currentRoot);
+                qDebug() << "[DEBUG] Expanded currentRoot in rowsInserted";
             }
         }
     );
 
+    // Prevent user from collapsing the root node, always fetch current rootIndex
+    QObject::connect(m_treeView, &QTreeView::collapsed, m_treeView,
+        [this](const QModelIndex &idx) {
+            if (!m_treeModel) {
+                qDebug() << "[ERROR] m_treeModel is null in collapsed handler";
+                return;
+            }
+            const QModelIndex currentRoot = m_treeModel->indexForUrl(m_treeRootUrl);
+            qDebug() << "[DEBUG] collapsed signal fired.";
+            qDebug() << "  idx.isValid() =" << idx.isValid();
+            qDebug() << "  idx data =" << idx.data().toString();
+            qDebug() << "  idx internalId =" << idx.internalId();
+            qDebug() << "  currentRoot.isValid() =" << currentRoot.isValid();
+            qDebug() << "  currentRoot data =" << currentRoot.data().toString();
+            qDebug() << "  currentRoot internalId =" << currentRoot.internalId();
+            if (idx == currentRoot && m_treeView) {
+                m_treeView->expand(currentRoot);
+                qDebug() << "[DEBUG] Re-expanded currentRoot after collapse";
+            }
+        }
+    );
+    // Ensure root expands as soon as children are loaded
+    QObject::connect(m_treeModel, &QAbstractItemModel::rowsInserted, m_treeView,
+        [this, rootIndex](const QModelIndex &parent, int, int) {
+            if (parent == rootIndex && m_treeView) {
+                m_treeView->expand(rootIndex);
+            }
+        }
+    );
+    // Prevent user from collapsing the root node
+    QObject::connect(m_treeView, &QTreeView::collapsed, m_treeView,
+        [this, rootIndex](const QModelIndex &idx) {
+            if (idx == rootIndex && m_treeView) {
+                m_treeView->expand(rootIndex);
+            }
+        }
+    );
+    // Prevent user from collapsing the root node
+    QObject::connect(m_treeView, &QTreeView::collapsed, m_treeView,
+        [this, rootIndex](const QModelIndex &idx) {
+            if (idx == rootIndex && m_treeView) {
+                m_treeView->expand(rootIndex);
+            }
+        }
+    );
     // Auto-resize on expand/collapse
-    QObject::connect(m_treeView, &QTreeView::expanded, this, [this](const QModelIndex &) {
-        m_treeView->resizeColumnToContents(0);
+    QObject::connect(m_treeView, &QTreeView::expanded, m_treeView, [this](const QModelIndex &) {
+        if (m_treeView) {
+            m_treeView->resizeColumnToContents(0);
+        }
     });
-    QObject::connect(m_treeView, &QTreeView::collapsed, this, [this](const QModelIndex &) {
-        m_treeView->resizeColumnToContents(0);
+    QObject::connect(m_treeView, &QTreeView::collapsed, m_treeView, [this](const QModelIndex &) {
+        if (m_treeView) {
+            m_treeView->resizeColumnToContents(0);
+        }
     });
 
     // Auto-resize on model changes (directory listing updates)
-    QObject::connect(m_treeModel, &QAbstractItemModel::rowsInserted, this, [this](const QModelIndex &, int, int) {
-        m_treeView->resizeColumnToContents(0);
+    QObject::connect(m_treeModel, &QAbstractItemModel::rowsInserted, m_treeView, [this](const QModelIndex &, int, int) {
+        if (m_treeView) {
+            m_treeView->resizeColumnToContents(0);
+        }
     });
-    QObject::connect(m_treeModel, &QAbstractItemModel::dataChanged, this, [this](const QModelIndex &, const QModelIndex &, const QVector<int> &) {
-        m_treeView->resizeColumnToContents(0);
+    QObject::connect(m_treeModel, &QAbstractItemModel::dataChanged, m_treeView, [this](const QModelIndex &, const QModelIndex &, const QVector<int> &) {
+        if (m_treeView) {
+            m_treeView->resizeColumnToContents(0);
+        }
     });
 
     // Use layout to ensure widget expands to full panel
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(m_treeView);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(layout);
+    if (layout && m_treeView) {
+        layout->addWidget(m_treeView);
+        layout->setContentsMargins(0, 0, 0, 0);
+        setLayout(layout);
+    } else {
+        qDebug() << "[ERROR] Failed to create layout or m_treeView is null";
+    }
 
-    // Directory selection emission - THIS IS CORRECT, NOT A BUG
+    // Directory selection emission
     connect(m_treeView, &QTreeView::clicked, this, [this](const QModelIndex &index) {
         if (!index.isValid()) return;
+        if (!m_treeModel) {
+            qDebug() << "[ERROR] m_treeModel is null in clicked handler";
+            return;
+        }
         KFileItem item = m_treeModel->itemForIndex(index);
         if (item.isDir())
             emit directorySelected(item.url());
-    });
-}
-
-void TreePanel::navigateToPath(const QUrl &url)
-{
-    qDebug() << "[DEBUG] TreePanel::navigateToPath called with:" << url.toString();
-    
-    // Simple validation - just check if it's a real path
-    QString path = url.toLocalFile();
-    QFileInfo fileInfo(path);
-    
-    if (!fileInfo.exists() || !fileInfo.isDir()) {
-        qDebug() << "[WARNING] Path does not exist or is not a directory:" << path;
-        qDebug() << "[WARNING] Navigation aborted. Please provide a valid directory path.";
-        return;
-    }
-    
-    // Simple approach: use KDirModel's expandToUrl and then select
-    m_treeModel->expandToUrl(url);
-    
-    // Wait a bit for model to load, then select and scroll
-    QTimer::singleShot(500, this, [this, url]() {
-        QModelIndex targetIndex = m_treeModel->indexForUrl(url);
-        if (targetIndex.isValid()) {
-            m_treeView->setCurrentIndex(targetIndex);
-            m_treeView->scrollTo(targetIndex, QAbstractItemView::PositionAtCenter);
-            qDebug() << "[DEBUG] Navigation complete to:" << url.toString();
-        } else {
-            qDebug() << "[WARNING] Could not find index for path:" << url.toString();
-        }
     });
 }
