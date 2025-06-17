@@ -130,7 +130,7 @@ void FilePanel::setDirectory(const QUrl &url)
     }
 }
 
-QUrl FilePanel::currentDirectory() const
+QUrl FilePanel::currentDirectory() const  noexcept
 {
     return m_currentUrl;
 }
