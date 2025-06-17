@@ -17,8 +17,12 @@ FilePanel::FilePanel(QWidget *parent)
     m_view->setSelectionMode(QAbstractItemView::SingleSelection);
     m_view->setContextMenuPolicy(Qt::CustomContextMenu);
 
+//    auto *layout = new QVBoxLayout(this);
+//    layout->addWidget(m_view);
     auto *layout = new QVBoxLayout(this);
-    layout->addWidget(m_view);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(m_view, 1); // Make the view expand to fill all area
 
     connect(m_view, &QListView::activated, this, &FilePanel::onActivated);
     connect(m_view, &QListView::customContextMenuRequested, this, &FilePanel::onCustomContextMenu);
