@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QCommandLineParser>
 #include <QFileInfo>
-#include <QPointer>  // FIXED: Added for safer pointer handling
 #include "FilePanel.h"
 #include "TreePanel.h"
 #include "PanelWrapper.h"
@@ -99,69 +98,50 @@ int main(int argc, char *argv[])
     splitter->addWidget(leftPanelWrapper);
     splitter->addWidget(rightPanelWrapper);
 
-    // SIGNALS-ONLY APPROACH: No direct object references
-    // Each component communicates only through signals
+    // SIGNALS-ONLY APPROACH: Multiple independent signal handlers
     
-    // FIXED: Extract duplicate connection code
-    auto connectPanelToTree = [treePanel](PanelWrapper *panel) {
-        QObject::connect(panel, &PanelWrapper::goToTreeRequested,
-            [treePanel](const QUrl &url, const QString &panelId) {
-                qDebug() << "[SIGNAL] Panel" << panelId << "requested tree navigation to:" << url.toString();
-                // FUTURE Audit: This would go through ActionMotor for logging
-                treePanel->navigateToPath(url);
-            });
-    };
-    
-    // Connect both panels using the same logic
-    connectPanelToTree(leftPanelWrapper);
-    connectPanelToTree(rightPanelWrapper);
-    
-    // FIXED: Use QPointer for safer pointer handling
-    QPointer<PanelWrapper> activePanel = nullptr;
-    
-    // FIXED: Lambda to update active panel with safer pointer handling
-    auto setActivePanel = [&activePanel](PanelWrapper *panel) {
-        // Deactivate previous panel
-        if (activePanel && activePanel != panel) {
-            activePanel->setActive(false);
-        }
-        
-        // Set new active panel
-        activePanel = panel;
-        
-        // Activate new panel
-        if (activePanel) {
-            activePanel->setActive(true);
-        }
-    };
-    
-    // FIXED: Connect panel activation signals properly
-    QObject::connect(leftPanelWrapper, &PanelWrapper::panelActivated, setActivePanel);
-    QObject::connect(rightPanelWrapper, &PanelWrapper::panelActivated, setActivePanel);
-    
-    // FIXED: Connect TreePanel directory selection with proper capture
-    QObject::connect(treePanel, &TreePanel::directorySelected,
-        [&activePanel](const QUrl &url) {
-            qDebug() << "[SIGNAL] TreePanel selected directory:" << url.toString();
-            
-            // FIXED: Check QPointer validity
-            if (activePanel) {
-                qDebug() << "[SIGNAL] Updating active panel:" << activePanel->panelId();
-                activePanel->setDirectory(url);
-            } else {
-                qDebug() << "[SIGNAL] No active panel - TreePanel selection ignored";
-            }
-            
-            // FUTURE ActionMotor: This would become an action request
-            // ActionRequest req;
-            // req.actionId = "navigation:updatePanel";
-            // req.parameters["targetUrl"] = url.toString();
-            // req.parameters["targetPanel"] = activePanel ? activePanel->panelId() : "none";
-            // actionMotor->executeAction(req);
+    // Connect panel "Go To Tree" requests to TreePanel
+    QObject::connect(leftPanelWrapper, &PanelWrapper::goToTreeRequested,
+        [treePanel](const QUrl &url, const QString &panelId) {
+            qDebug() << "[SIGNAL] Panel" << panelId << "requested tree navigation to:" << url.toString();
+            treePanel->navigateToPath(url);
         });
     
-    // Set left panel as initially active (matching old behavior)
-    setActivePanel(leftPanelWrapper);
+    QObject::connect(rightPanelWrapper, &PanelWrapper::goToTreeRequested,
+        [treePanel](const QUrl &url, const QString &panelId) {
+            qDebug() << "[SIGNAL] Panel" << panelId << "requested tree navigation to:" << url.toString();
+            treePanel->navigateToPath(url);
+        });
+    
+    // MULTIPLE SIGNAL HANDLERS: Each panel has its own connection to TreePanel
+    // This allows independent control of which panels follow TreePanel
+    
+    // Connect TreePanel to LEFT panel (independent connection)
+    QObject::connect(treePanel, &TreePanel::directorySelected,
+        leftPanelWrapper, &PanelWrapper::onTreePanelDirectorySelected);
+    
+    // Connect TreePanel to RIGHT panel (independent connection)
+    QObject::connect(treePanel, &TreePanel::directorySelected,
+        rightPanelWrapper, &PanelWrapper::onTreePanelDirectorySelected);
+    
+    // Set initial follows-tree state
+    leftPanelWrapper->setFollowsTreePanel(true);   // Left panel follows tree by default
+    rightPanelWrapper->setFollowsTreePanel(false); // Right panel doesn't follow by default
+    
+    // Log when panels toggle their follow state
+    QObject::connect(leftPanelWrapper, &PanelWrapper::followsTreePanelToggled,
+        [](bool follows, const QString &panelId) {
+            qDebug() << "[TOGGLE] Panel" << panelId 
+                     << (follows ? "now follows" : "stopped following") 
+                     << "TreePanel";
+        });
+    
+    QObject::connect(rightPanelWrapper, &PanelWrapper::followsTreePanelToggled,
+        [](bool follows, const QString &panelId) {
+            qDebug() << "[TOGGLE] Panel" << panelId 
+                     << (follows ? "now follows" : "stopped following") 
+                     << "TreePanel";
+        });
     
     // FUTURE CommandMaster: Connect action requests to ActionMotor
     // QObject::connect(leftPanelWrapper, &PanelWrapper::actionRequested,

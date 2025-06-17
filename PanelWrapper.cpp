@@ -1,14 +1,14 @@
 #include "PanelWrapper.h"
 #include <QDebug>
-#include <QMouseEvent>  // FIXED: Added for mouse event handling
+#include <QMouseEvent>
 
 PanelWrapper::PanelWrapper(const QString &panelId, QWidget *parent)
     : QWidget(parent)
     , m_filePanel(new FilePanel(this))
     , m_goToTreeButton(new QPushButton("Go To Tree", this))
     , m_panelId(panelId.isEmpty() ? QUuid::createUuid().toString() : panelId)
-    , m_currentUrl(QUrl::fromLocalFile(QDir::homePath()))  // FIXED: Now QDir is included
-    , m_isActive(false)  // FIXED: Initialize active state
+    , m_currentUrl(QUrl::fromLocalFile(QDir::homePath()))
+    , m_followsTreePanel(false)  // Default: panels don't follow tree
 {
     // Set up layout
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -35,6 +35,9 @@ PanelWrapper::PanelWrapper(const QString &panelId, QWidget *parent)
     // Connect button
     connect(m_goToTreeButton, &QPushButton::clicked, this, &PanelWrapper::onGoToTreeClicked);
     
+    // Set initial visual state
+    updateVisualState();
+    
     // FUTURE CommandMaster: Connect command bar
     // connect(m_commandBar, &QLineEdit::returnPressed, this, [this]() {
     //     QString command = m_commandBar->text();
@@ -57,13 +60,12 @@ PanelWrapper::PanelWrapper(const QString &panelId, QWidget *parent)
 
 void PanelWrapper::setDirectory(const QUrl &url)
 {
-    // FIXED: Added validation
     if (!url.isValid()) {
         qDebug() << "[WARNING] Invalid URL passed to setDirectory:" << url.toString();
         return;
     }
     
-    m_currentUrl = url;  // Track the URL
+    m_currentUrl = url;
     m_filePanel->setDirectory(url);
     
     qDebug() << "[DEBUG] Panel" << m_panelId << "directory set to:" << url.toString();
@@ -77,37 +79,56 @@ void PanelWrapper::setDirectory(const QUrl &url)
 
 QUrl PanelWrapper::currentUrl() const
 {
-    return m_currentUrl;  // Return tracked URL
+    return m_currentUrl;
 }
 
-void PanelWrapper::setActive(bool active)
+void PanelWrapper::setFollowsTreePanel(bool follows)
 {
-    if (m_isActive == active) return;  // FIXED: Avoid unnecessary updates
+    if (m_followsTreePanel == follows) return;
     
-    m_isActive = active;
+    m_followsTreePanel = follows;
+    updateVisualState();
     
-    // Update visual style
-    if (m_isActive) {
-        setStyleSheet("PanelWrapper { border: 2px solid #3daee9; }");
-        qDebug() << "[ACTIVE] Panel" << m_panelId << "is now active for TreePanel updates";
+    qDebug() << "[DEBUG] Panel" << m_panelId 
+             << (follows ? "NOW FOLLOWS" : "NO LONGER FOLLOWS") 
+             << "TreePanel selections";
+    
+    emit followsTreePanelToggled(follows, m_panelId);
+}
+
+void PanelWrapper::updateVisualState()
+{
+    if (m_followsTreePanel) {
+        // Green border when following tree
+        setStyleSheet("PanelWrapper { border: 2px solid #27ae60; }");
+        m_goToTreeButton->setText("Go To Tree [FOLLOWING]");
     } else {
+        // No border when not following
         setStyleSheet("");
-        qDebug() << "[INACTIVE] Panel" << m_panelId << "is no longer active";
+        m_goToTreeButton->setText("Go To Tree");
+    }
+}
+
+void PanelWrapper::onTreePanelDirectorySelected(const QUrl &url)
+{
+    // Only update if this panel is set to follow tree
+    if (m_followsTreePanel) {
+        qDebug() << "[DEBUG] Panel" << m_panelId << "following TreePanel to:" << url.toString();
+        setDirectory(url);
     }
 }
 
 void PanelWrapper::mousePressEvent(QMouseEvent *event)
 {
-    // FIXED: Proper mouse event handling
     if (event->button() == Qt::LeftButton) {
-        emit panelActivated(this);
+        // Toggle follows tree state on click
+        setFollowsTreePanel(!m_followsTreePanel);
     }
-    QWidget::mousePressEvent(event);  // Pass to base class
+    QWidget::mousePressEvent(event);
 }
 
 void PanelWrapper::onGoToTreeClicked()
 {
-    // FIXED: Removed redundant local variable
     qDebug() << "[DEBUG] 'Go To Tree' clicked from panel:" << m_panelId;
     qDebug() << "  Current URL:" << m_currentUrl.toString();
     
@@ -126,26 +147,3 @@ void PanelWrapper::onGoToTreeClicked()
     // auditDetails["url"] = m_currentUrl.toString();
     // emit auditableActionPerformed("navigation:goToTree", auditDetails, m_panelId);
 }
-
-// FUTURE CommandMaster: Command context management
-// void PanelWrapper::setCommandContext(const QString &context)
-// {
-//     m_commandContext = context;
-//     emit contextChangeRequested(context, m_panelId);
-//     
-//     // Update UI to reflect context
-//     if (context == "sudo") {
-//         m_commandBar->setStyleSheet("QLineEdit { background-color: #ffcccc; }");
-//     } else if (context == "docker") {
-//         m_commandBar->setStyleSheet("QLineEdit { background-color: #ccccff; }");
-//     } else {
-//         m_commandBar->setStyleSheet("");
-//     }
-// }
-
-// FUTURE ActionMotor: Register available actions
-// void PanelWrapper::registerAction(const QString &actionId, const QVariantMap &metadata)
-// {
-//     m_registeredActions[actionId] = metadata;
-//     qDebug() << "[DEBUG] Action registered:" << actionId << "for panel:" << m_panelId;
-// }
