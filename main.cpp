@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QCommandLineParser>
 #include <QFileInfo>
+#include <QPointer>  // FIXED: Added for safer pointer handling
 #include "FilePanel.h"
 #include "TreePanel.h"
 #include "PanelWrapper.h"
@@ -101,76 +102,49 @@ int main(int argc, char *argv[])
     // SIGNALS-ONLY APPROACH: No direct object references
     // Each component communicates only through signals
     
-    // Connect panel "Go To Tree" requests to TreePanel
-    QObject::connect(leftPanelWrapper, &PanelWrapper::goToTreeRequested,
-        [=](const QUrl &url, const QString &panelId) {
-            qDebug() << "[SIGNAL] Panel" << panelId << "requested tree navigation to:" << url.toString();
-            // FUTURE Audit: This would go through ActionMotor for logging
-            treePanel->navigateToPath(url);
-        });
+    // FIXED: Extract duplicate connection code
+    auto connectPanelToTree = [treePanel](PanelWrapper *panel) {
+        QObject::connect(panel, &PanelWrapper::goToTreeRequested,
+            [treePanel](const QUrl &url, const QString &panelId) {
+                qDebug() << "[SIGNAL] Panel" << panelId << "requested tree navigation to:" << url.toString();
+                // FUTURE Audit: This would go through ActionMotor for logging
+                treePanel->navigateToPath(url);
+            });
+    };
     
-    QObject::connect(rightPanelWrapper, &PanelWrapper::goToTreeRequested,
-        [=](const QUrl &url, const QString &panelId) {
-            qDebug() << "[SIGNAL] Panel" << panelId << "requested tree navigation to:" << url.toString();
-            // FUTURE Audit: This would go through ActionMotor for logging
-            treePanel->navigateToPath(url);
-        });
+    // Connect both panels using the same logic
+    connectPanelToTree(leftPanelWrapper);
+    connectPanelToTree(rightPanelWrapper);
     
-    // IMPORTANT: Track which panel should receive TreePanel updates
-    // This replaces the old behavior where only left panel was connected
-    PanelWrapper *activePanel = nullptr;
+    // FIXED: Use QPointer for safer pointer handling
+    QPointer<PanelWrapper> activePanel = nullptr;
     
-    // Lambda to update active panel and visual feedback
-    auto setActivePanel = [&](PanelWrapper *panel) {
-        // Remove highlight from previous active panel
-        if (activePanel) {
-            activePanel->setStyleSheet("");
+    // FIXED: Lambda to update active panel with safer pointer handling
+    auto setActivePanel = [&activePanel](PanelWrapper *panel) {
+        // Deactivate previous panel
+        if (activePanel && activePanel != panel) {
+            activePanel->setActive(false);
         }
         
         // Set new active panel
         activePanel = panel;
         
-        // Add visual highlight to active panel
+        // Activate new panel
         if (activePanel) {
-            activePanel->setStyleSheet("PanelWrapper { border: 2px solid #3daee9; }");
-            qDebug() << "[ACTIVE] Panel" << activePanel->panelId() << "is now active for TreePanel updates";
+            activePanel->setActive(true);
         }
     };
     
-    // Connect mouse events to track active panel
-    // When user clicks on a panel, it becomes active for TreePanel updates
-    leftPanelWrapper->installEventFilter(new QObject);
-    rightPanelWrapper->installEventFilter(new QObject);
+    // FIXED: Connect panel activation signals properly
+    QObject::connect(leftPanelWrapper, &PanelWrapper::panelActivated, setActivePanel);
+    QObject::connect(rightPanelWrapper, &PanelWrapper::panelActivated, setActivePanel);
     
-    class PanelClickFilter : public QObject {
-    public:
-        PanelWrapper *panel;
-        std::function<void()> callback;
-        
-        PanelClickFilter(PanelWrapper *p, std::function<void()> cb) : panel(p), callback(cb) {}
-        
-        bool eventFilter(QObject *obj, QEvent *event) override {
-            if (event->type() == QEvent::MouseButtonPress) {
-                callback();
-            }
-            return false; // Don't consume the event
-        }
-    };
-    
-    // Install click detection on panels
-    leftPanelWrapper->installEventFilter(new PanelClickFilter(leftPanelWrapper, [&]() {
-        setActivePanel(leftPanelWrapper);
-    }));
-    
-    rightPanelWrapper->installEventFilter(new PanelClickFilter(rightPanelWrapper, [&]() {
-        setActivePanel(rightPanelWrapper);
-    }));
-    
-    // Connect TreePanel directory selection to ACTIVE panel
+    // FIXED: Connect TreePanel directory selection with proper capture
     QObject::connect(treePanel, &TreePanel::directorySelected,
-        [=, &activePanel](const QUrl &url) {
+        [&activePanel](const QUrl &url) {
             qDebug() << "[SIGNAL] TreePanel selected directory:" << url.toString();
             
+            // FIXED: Check QPointer validity
             if (activePanel) {
                 qDebug() << "[SIGNAL] Updating active panel:" << activePanel->panelId();
                 activePanel->setDirectory(url);

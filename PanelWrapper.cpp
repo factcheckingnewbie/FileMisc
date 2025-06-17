@@ -1,11 +1,14 @@
 #include "PanelWrapper.h"
 #include <QDebug>
+#include <QMouseEvent>  // FIXED: Added for mouse event handling
 
 PanelWrapper::PanelWrapper(const QString &panelId, QWidget *parent)
     : QWidget(parent)
     , m_filePanel(new FilePanel(this))
     , m_goToTreeButton(new QPushButton("Go To Tree", this))
     , m_panelId(panelId.isEmpty() ? QUuid::createUuid().toString() : panelId)
+    , m_currentUrl(QUrl::fromLocalFile(QDir::homePath()))  // FIXED: Now QDir is included
+    , m_isActive(false)  // FIXED: Initialize active state
 {
     // Set up layout
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -54,7 +57,16 @@ PanelWrapper::PanelWrapper(const QString &panelId, QWidget *parent)
 
 void PanelWrapper::setDirectory(const QUrl &url)
 {
+    // FIXED: Added validation
+    if (!url.isValid()) {
+        qDebug() << "[WARNING] Invalid URL passed to setDirectory:" << url.toString();
+        return;
+    }
+    
+    m_currentUrl = url;  // Track the URL
     m_filePanel->setDirectory(url);
+    
+    qDebug() << "[DEBUG] Panel" << m_panelId << "directory set to:" << url.toString();
     
     // FUTURE Audit: Log directory changes
     // QVariantMap details;
@@ -65,28 +77,53 @@ void PanelWrapper::setDirectory(const QUrl &url)
 
 QUrl PanelWrapper::currentUrl() const
 {
-    return m_filePanel->currentUrl();
+    return m_currentUrl;  // Return tracked URL
+}
+
+void PanelWrapper::setActive(bool active)
+{
+    if (m_isActive == active) return;  // FIXED: Avoid unnecessary updates
+    
+    m_isActive = active;
+    
+    // Update visual style
+    if (m_isActive) {
+        setStyleSheet("PanelWrapper { border: 2px solid #3daee9; }");
+        qDebug() << "[ACTIVE] Panel" << m_panelId << "is now active for TreePanel updates";
+    } else {
+        setStyleSheet("");
+        qDebug() << "[INACTIVE] Panel" << m_panelId << "is no longer active";
+    }
+}
+
+void PanelWrapper::mousePressEvent(QMouseEvent *event)
+{
+    // FIXED: Proper mouse event handling
+    if (event->button() == Qt::LeftButton) {
+        emit panelActivated(this);
+    }
+    QWidget::mousePressEvent(event);  // Pass to base class
 }
 
 void PanelWrapper::onGoToTreeClicked()
 {
-    QUrl currentUrl = m_filePanel->currentUrl();
+    // FIXED: Removed redundant local variable
     qDebug() << "[DEBUG] 'Go To Tree' clicked from panel:" << m_panelId;
-    qDebug() << "  Current URL:" << currentUrl.toString();
+    qDebug() << "  Current URL:" << m_currentUrl.toString();
     
     // Emit signal with panel identification
-    emit goToTreeRequested(currentUrl, m_panelId);
+    emit goToTreeRequested(m_currentUrl, m_panelId);
     
     // FUTURE ActionMotor: This will become a generic action request
     // QVariantMap params;
-    // params["targetUrl"] = currentUrl.toString();
+    // params["targetUrl"] = m_currentUrl.toString();
     // params["source"] = "panel";
     // emit actionRequested("navigation:syncTreeToPanel", params, m_panelId);
     
     // FUTURE Audit: Log this action
     // QVariantMap auditDetails;
     // auditDetails["action"] = "goToTree";
-    // auditDetails["url"] = currentUrl.toString();
+    // auditDetails["url"] = m_currentUrl.toString();
     // emit auditableActionPerformed("navigation:goToTree", auditDetails, m_panelId);
 }
 
