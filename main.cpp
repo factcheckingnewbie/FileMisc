@@ -3,6 +3,7 @@
 #include <QSplitter>
 #include <QDir>
 #include <QTreeView>
+#include <KFileItemDelegate>
 #include <KDirModel>
 #include <KDirLister>
 #include <QPushButton>
@@ -35,6 +36,7 @@ int main(int argc, char *argv[])
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
     treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // Show "/" as top node
     treeView->setModel(treeModel);
+    treeView->setItemDelegate(new KFileItemDelegate(treeView));
     QModelIndex rootIndex = treeModel->indexForUrl(treeRootUrl);
     treeView->setRootIndex(rootIndex);
     treeView->setHeaderHidden(false);
