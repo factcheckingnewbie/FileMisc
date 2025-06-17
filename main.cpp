@@ -5,17 +5,15 @@
 #include <QTreeView>
 #include <KDirModel>
 #include <KDirLister>
-#include <QTimer>
-#include <QDebug>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "FilePanel.h"
 
-// Only KIO public API, per /usr/include/KF6/KIOWidgets/kdirmodel.h
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    printf("Debug output test: main() started\n");
 
     QWidget mainWin;
     mainWin.setWindowTitle("KIO Commander");
@@ -32,80 +30,53 @@ int main(int argc, char *argv[])
     QTreeView *treeView = new QTreeView;
     KDirModel *treeModel = new KDirModel(treeView);
 
-    // Only show directories in the TreeView using public KIO API
     treeModel->dirLister()->setMimeFilter(QStringList() << "inode/directory");
 
     QUrl treeRootUrl = QUrl::fromLocalFile(QDir::rootPath()); // Always root ("/")
-    treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // <-- Show "/" as top node
+    treeModel->openUrl(treeRootUrl, KDirModel::ShowRoot);     // Show "/" as top node
     treeView->setModel(treeModel);
     QModelIndex rootIndex = treeModel->indexForUrl(treeRootUrl);
     treeView->setRootIndex(rootIndex);
-    treeView->setHeaderHidden(true); // Optional minimalism
+    treeView->setHeaderHidden(false);
     treeView->resizeColumnToContents(0);
 
-    // MANUAL EXPANSION: connect button to existing (broken) expansion logic
+    // "Expand to $HOME": expand from / stepwise
     QObject::connect(expandHomeButton, &QPushButton::clicked, treeView, [treeModel, treeView]() {
         QString homePath = QDir::homePath();
         QUrl homeUrl = QUrl::fromLocalFile(homePath);
-        QModelIndex idx = treeModel->indexForUrl(homeUrl);
-        if (!idx.isValid()) {
-            qDebug() << "[DEBUG] $HOME index not valid in tree!";
+
+        // Build path chain from root ("/") to $HOME
+        QStringList parts = QDir(homePath).absolutePath().split('/', Qt::SkipEmptyParts);
+        QString currentPath = "/";
+        QModelIndex parentIdx = treeModel->indexForUrl(QUrl::fromLocalFile(currentPath));
+        bool found = parentIdx.isValid();
+        if (!found) {
+            printf("[DEBUG] Could not get root index\n");
             return;
         }
-        QList<QModelIndex> toExpand;
-        QModelIndex walker = idx;
-        while (walker.isValid()) {
-            toExpand.prepend(walker);
-            walker = walker.parent();
-        }
-        for (const QModelIndex &ancestor : toExpand) {
-            treeView->expand(ancestor);
-            qDebug() << "[DEBUG] Expanding:" << ancestor.data().toString();
-        }
-        treeView->scrollTo(idx, QTreeView::EnsureVisible);
-        treeView->setCurrentIndex(idx);
-        qDebug() << "[DEBUG] Scrolled and selected $HOME node";
-    });
+        treeView->expand(parentIdx);
 
-    // Prevent user from collapsing the root node, always fetch current rootIndex
-    QObject::connect(treeView, &QTreeView::collapsed, treeView,
-        [treeView, treeModel, treeRootUrl](const QModelIndex &idx) {
-            const QModelIndex currentRoot = treeModel->indexForUrl(treeRootUrl);
-            if (idx == currentRoot) {
-                treeView->expand(currentRoot);
+        // Stepwise expand each ancestor
+        for (const QString &part : parts) {
+            currentPath += (currentPath.endsWith('/') ? "" : "/") + part;
+            QUrl currentUrl = QUrl::fromLocalFile(currentPath);
+            QModelIndex idx = treeModel->indexForUrl(currentUrl);
+            if (!idx.isValid()) {
+                printf("[DEBUG] Index not valid for: %s\n", currentPath.toUtf8().constData());
+                return;
             }
+            treeView->expand(idx);
+            parentIdx = idx;
         }
-    );
-
-    // Ensure root expands as soon as children are loaded
-    QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView,
-        [treeView, rootIndex](const QModelIndex &parent, int, int) {
-            if (parent == rootIndex) {
-                treeView->expand(rootIndex);
-            }
-        }
-    );
-
-    // Auto-resize on expand/collapse
-    QObject::connect(treeView, &QTreeView::expanded, treeView, [treeView](const QModelIndex &) {
-        treeView->resizeColumnToContents(0);
-    });
-    QObject::connect(treeView, &QTreeView::collapsed, treeView, [treeView](const QModelIndex &) {
-        treeView->resizeColumnToContents(0);
-    });
-
-    // Auto-resize on model changes (directory listing updates)
-    QObject::connect(treeModel, &QAbstractItemModel::rowsInserted, treeView, [treeView](const QModelIndex &, int, int) {
-        treeView->resizeColumnToContents(0);
-    });
-    QObject::connect(treeModel, &QAbstractItemModel::dataChanged, treeView, [treeView](const QModelIndex &, const QModelIndex &, const QVector<int> &) {
-        treeView->resizeColumnToContents(0);
+        // Select and scroll to $HOME
+        treeView->scrollTo(parentIdx, QTreeView::EnsureVisible);
+        treeView->setCurrentIndex(parentIdx);
+        printf("[DEBUG] Expanded to: %s\n", homePath.toUtf8().constData());
     });
 
     FilePanel *leftPanel = new FilePanel;
     FilePanel *rightPanel = new FilePanel;
 
-    // Start in home and root for demonstration; adapt as you wish.
     leftPanel->setDirectory(QUrl::fromLocalFile(QDir::homePath()));
     rightPanel->setDirectory(QUrl::fromLocalFile(QDir::rootPath()));
 
@@ -113,7 +84,6 @@ int main(int argc, char *argv[])
     splitter->addWidget(leftPanel);
     splitter->addWidget(rightPanel);
 
-    // Combine top row and splitter in a vertical layout
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(topRowLayout);
     mainLayout->addWidget(splitter);

@@ -6,7 +6,7 @@
 #include <KFileItem>
 #include <KIO/CopyJob>
 #include <KIO/StatJob>
-#include <KI18n/KLocalizedString>
+// #include <KI18n/KLocalizedString>
 
 FilePanel::FilePanel(QWidget *parent)
     : QWidget(parent),
