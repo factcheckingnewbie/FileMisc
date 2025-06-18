@@ -47,9 +47,10 @@ FilePanel::FilePanel(QWidget *parent)
         qDebug() << "[WARNING] Failed to create KFileItemDelegate";
     }
     
-    m_listView->setViewMode(QListView::IconMode);
-    m_listView->setUniformItemSizes(true);
-    m_listView->setResizeMode(QListView::Adjust);
+    // REMOVED UNAUTHORIZED LINES:
+    // m_listView->setViewMode(QListView::IconMode);
+    // m_listView->setUniformItemSizes(true);
+    // m_listView->setResizeMode(QListView::Adjust);
 
     // Use layout to ensure widget expands to full panel
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -130,7 +131,7 @@ void FilePanel::setDirectory(const QUrl &url)
     }
 }
 
-QUrl FilePanel::currentDirectory() const  noexcept
+QUrl FilePanel::currentDirectory() const noexcept
 {
     return m_currentUrl;
 }
