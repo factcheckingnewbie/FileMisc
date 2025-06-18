@@ -1,9 +1,12 @@
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QSplitter>
 #include <QDir>
 #include <QDebug>
 #include <QListView>
+#include <QWidget>
+#include <QFrame>
 #include "FilePanel.h"
 #include "TreePanel.h"
 
@@ -16,19 +19,82 @@ int main(int argc, char *argv[])
     QWidget mainWin;
     mainWin.setWindowTitle("KIO Commander");
 
-    QSplitter *splitter = new QSplitter(&mainWin);
+    // Create main vertical layout for the window
+    QVBoxLayout *mainLayout = new QVBoxLayout(&mainWin);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
 
+    // Create top panel (future menubar)
+    QFrame *topPanel = new QFrame;
+    topPanel->setFrameStyle(QFrame::Box | QFrame::Raised);
+    topPanel->setMinimumHeight(30);
+    topPanel->setMaximumHeight(30);
+    topPanel->setStyleSheet("QFrame { background-color: #f0f0f0; }");
+    mainLayout->addWidget(topPanel);
+
+    // Create horizontal splitter for tree and right side
+    QSplitter *horizontalSplitter = new QSplitter(Qt::Horizontal);
+    mainLayout->addWidget(horizontalSplitter);
+
+    // Create tree panel (left side, full height)
     TreePanel *treePanel = new TreePanel;
+    horizontalSplitter->addWidget(treePanel);
+
+    // Create vertical splitter for right side
+    QSplitter *verticalSplitter = new QSplitter(Qt::Vertical);
+    horizontalSplitter->addWidget(verticalSplitter);
+
+    // Create empty widget for top part of vertical splitter
+    QWidget *topEmptyWidget = new QWidget;
+    topEmptyWidget->setStyleSheet("QWidget { background-color: #fafafa; }");
+    verticalSplitter->addWidget(topEmptyWidget);
+
+    // Create container for the two file panels
+    QWidget *filePanelsContainer = new QWidget;
+    QHBoxLayout *filePanelsLayout = new QHBoxLayout(filePanelsContainer);
+    filePanelsLayout->setContentsMargins(0, 0, 0, 0);
+    filePanelsLayout->setSpacing(2);
+
+    // Create file panels
     FilePanel *leftPanel = new FilePanel;
     FilePanel *rightPanel = new FilePanel;
 
-    // Start in home and root for demonstration
+    // Set initial directories
     leftPanel->setDirectory(QUrl::fromLocalFile(QDir::homePath()));
     rightPanel->setDirectory(QUrl::fromLocalFile(QDir::rootPath()));
 
-    splitter->addWidget(treePanel);
-    splitter->addWidget(leftPanel);
-    splitter->addWidget(rightPanel);
+    // Add file panels to container
+    filePanelsLayout->addWidget(leftPanel);
+    filePanelsLayout->addWidget(rightPanel);
+
+    // Add file panels container to vertical splitter
+    verticalSplitter->addWidget(filePanelsContainer);
+
+    // Set initial splitter sizes
+    // Horizontal splitter: 30% tree, 70% right side
+    horizontalSplitter->setSizes(QList<int>() << 300 << 700);
+    
+    // Vertical splitter: 50% empty top, 50% file panels (minimum for file panels)
+    verticalSplitter->setSizes(QList<int>() << 300 << 300);
+
+    // CONSTRAINT: Ensure file panels never go below 50% of vertical splitter height
+    // Connect to splitter movement to enforce minimum
+    QObject::connect(verticalSplitter, &QSplitter::splitterMoved, 
+                     [verticalSplitter](int pos, int index) {
+        QList<int> sizes = verticalSplitter->sizes();
+        int totalHeight = sizes[0] + sizes[1];
+        int minFilePanelHeight = totalHeight / 2;  // 50% minimum
+        
+        // If file panels (bottom) would be less than 50%, adjust
+        if (sizes[1] < minFilePanelHeight) {
+            sizes[0] = totalHeight - minFilePanelHeight;
+            sizes[1] = minFilePanelHeight;
+            verticalSplitter->setSizes(sizes);
+            qDebug() << "Enforced minimum 50% height for file panels";
+        }
+        
+        qDebug() << "Vertical splitter sizes - Top:" << sizes[0] << "Bottom:" << sizes[1];
+    });
 
     // Track active panel
     FilePanel *activePanel = leftPanel;
@@ -79,9 +145,6 @@ int main(int argc, char *argv[])
                          }
                      });
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(splitter);
-    mainWin.setLayout(layout);
     mainWin.resize(1200, 600);
     mainWin.show();
 
