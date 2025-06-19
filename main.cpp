@@ -10,6 +10,22 @@
 #include "FilePanel.h"
 #include "TreePanel.h"
 
+/* 
+  Layout structure
+  mainWin (QWidget)
+└── mainLayout (QVBoxLayout)
+    ├── topPanel (QFrame) - 30px fixed height
+    └── horizontalSplitter (QSplitter - Horizontal)
+        ├── treePanel (TreePanel)
+        └── verticalSplitter (QSplitter - Vertical)
+            ├── topEmptyWidget (QWidget)
+            └── filePanelsContainer (QWidget)
+                └── filePanelsLayout (QHBoxLayout)
+                    ├── leftPanel (FilePanel)
+                    └── rightPanel (FilePanel)
+
+*/
+
 int main(int argc, char *argv[])
 {
     qDebug() << "=== Application started ===";
