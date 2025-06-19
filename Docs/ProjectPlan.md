@@ -20,15 +20,14 @@
 ##  Details 
 -    Highest priority. Without these change, commands to files will be unpredictable
 	___
-    	- c .  Add punktpunkt to listviews
-              Below panels shall be a fixed menu bar with 
-	 Add panel at top  of each listview .
+		-    Add punktpunkt to listviews
+		-  Add panel at top  of each listview .
 	 Panel shall have one buttine with  text field for each listciew that show truncated string of  current directory
  
- *  *  Action when click on button:
-	- Show menu defined in yaml
-	-  Development on menu continue in Yaml and a new  ScriptingEngine. 
-		- First menu-item shall be rename-file, which will issue 
+ 		-  Action when click on button:
+			- Show menu defined in yaml
+			-  Development on menu will continue in Yaml tigether woth creating  a new  ScriptingEngine. 
+			- First menu-item shall be rename-file, which will issue 
 		```
 		// pseudocode
 		Fname=current selected_file_in_listview1
@@ -36,7 +35,8 @@
 		```
 	That gives, Fiirst step to create scripting engine is to 
 	implement an method to query CommandMaster for what is selected in the panels.	
- - The above will in future need changes to placements and layouts. For now, as a poc - it will due.	
+
+ -   The above will in future need changes to placements and layouts. For now, as a poc - it will due.	
 ### Must Be Done, but not First priority . 
    -  a  (Is implented) Splitter above listviews, the _change size_  down or up
      - b.  (ToBeImplented)  Splitter below listviews, they _move_ up or down 
