@@ -1,0 +1,86 @@
+commands:
+  - group_name: files
+    group_label: "File Operations"
+    indent: 4
+    blank_lines_before: 0
+    blank_lines_after: 0
+    commands:
+      - name: list_files
+        alias: ls
+        indent: 8
+        description: "List files in a directory"
+        description_quoted: true
+        args:
+          - "directory"
+        out: "filelist"
+        shell: "ls \"{directory}\""
+        shell_quoted: false
+        blank_lines_before: 0
+        blank_lines_after: 1
+      - name: find_pattern
+        alias: grep
+        indent: 8
+        description: "Find a pattern in a file list"
+        description_quoted: true
+        args:
+          - "pattern"
+          - "in:filelist"
+        out: "matches"
+        shell: "echo \"{in}\" | grep \"{pattern}\""
+        shell_quoted: false
+        blank_lines_before: 1
+        blank_lines_after: 1
+      - name: count_matches
+        alias: count
+        indent: 8
+        description: "Count number of matches"
+        description_quoted: true
+        args:
+          - "in:matches"
+        out: "count"
+        shell: "echo \"{in}\" | wc -l"
+        shell_quoted: false
+        blank_lines_before: 1
+        blank_lines_after: 0
+pipeline:
+  name: "Count files matching foo"
+  indent: 4
+  blank_lines_before: 0
+  blank_lines_after: 0
+  steps:
+    - name: list_files
+      indent: 8
+      directory: "/tmp"
+    - name: find_pattern
+      indent: 8
+      pattern: "foo"
+    - name: count_matches
+      indent: 8
+meta:
+  preserve_blank_lines: true
+  preserve_indentation: true
+  original_format: "dsl"
+  original_lines:
+    - "Commands"
+    - "    Group files label:\"File Operations\""
+    - "        Command list_files alias:ls"
+    - "            Description: \"List files in a directory\""
+    - "            Args: directory"
+    - "            Out: filelist"
+    - "            Shell: ls \"{directory}\""
+    - ""
+    - "        Command find_pattern alias:grep"
+    - "            Description: \"Find a pattern in a file list\""
+    - "            Args: pattern in:filelist"
+    - "            Out: matches"
+    - "            Shell: echo \"{in}\" | grep \"{pattern}\""
+    - ""
+    - "        Command count_matches alias:count"
+    - "            Description: \"Count number of matches\""
+    - "            Args: in:matches"
+    - "            Out: count"
+    - "            Shell: echo \"{in}\" | wc -l"
+    - "    Pipeline \"Count files matching foo\""
+    - "        Step list_files directory:\"/tmp\""
+    - "        Step find_pattern pattern:\"foo\" in:@list_files"
+    - "        Step count_matches in:@find_pattern"

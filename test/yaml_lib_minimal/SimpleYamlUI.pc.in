@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: SimpleYamlUI
+Description: Simple YAML-based UI library for Qt
+Version: 1.0.0
+Requires: Qt5Core Qt5Widgets yaml-cpp
+Libs: -L${libdir} -lSimpleYamlUI
+Cflags: -I${includedir}

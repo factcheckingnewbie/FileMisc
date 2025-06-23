@@ -1,0 +1,23 @@
+buttons:
+  - id: open_file
+    label: "Open File"
+  - id: save_file
+    label: "Save File"
+  - id: exit_app
+    label: "Exit"
+
+menus:
+  - id: file_menu
+    label: "&File"
+    items:
+      - id: new_doc
+        label: "&New"
+      - id: open_doc
+        label: "&Open..."
+      - id: save_doc
+        label: "&Save"
+  - id: help_menu
+    label: "&Help"
+    items:
+      - id: about
+        label: "&About"

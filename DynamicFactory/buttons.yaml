@@ -1,0 +1,10 @@
+buttons:
+  - text: "List Home"
+    color: "#00ccff"
+    command: "ls ~"
+  - text: "Show Date"
+    color: "#aaff00"
+    command: "date"
+  - text: "Echo Hello"
+    color: "#ffcccc"
+    command: "echo Hello World"

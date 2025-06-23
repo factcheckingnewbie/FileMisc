@@ -1,0 +1,25 @@
+commands:
+  - group: "File Operations"
+    commands:
+      - name: "list_files"
+        alias: "ls"
+        description: "\"List files in a directory\""
+        args:
+          - "directory"
+        out: "filelist"
+        shell: "ls \"{directory}\""
+      - name: "find_pattern"
+        alias: "grep"
+        description: "\"Find a pattern in a file list\""
+        args:
+          - "pattern"
+          - "in:filelist"
+        out: "matches"
+        shell: "echo \"{in}\" | grep \"{pattern}\""
+      - name: "count_matches"
+        alias: "count"
+        description: "\"Count number of matches\""
+        args:
+          - "in:matches"
+        out: "count"
+        shell: "echo \"{in}\" | wc -l"

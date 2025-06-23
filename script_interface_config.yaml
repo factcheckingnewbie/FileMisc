@@ -1,0 +1,242 @@
+# CommandMaster Script Engine Interface Configuration
+# This YAML defines custom buttons and menus for the script engine
+
+interface:
+  version: 1.0
+  name: "Script Engine Controls"
+
+buttons:
+  - id: "btn_execute_script"
+    label: "Execute Script"
+    tooltip: "Run the current script on selected files"
+    icon: ":/icons/run-script.png"
+    position: "toolbar_main"
+    shortcut: "Ctrl+Shift+X"
+    action:
+      type: "execute_script"
+      parameters:
+        source: "$SCRIPT_EDITOR"
+        context:
+          - "$SELECTED_FILES"
+          - "$CURRENT_DIR"
+          - "$OTHER_DIR"
+    
+  - id: "btn_batch_operations"
+    label: "Batch Ops"
+    tooltip: "Perform batch operations on selected files"
+    icon: ":/icons/batch.png"
+    position: "toolbar_file_operations"
+    action:
+      type: "show_dialog"
+      dialog: "batch_operations"
+
+menus:
+  - id: "menu_scripts"
+    label: "&Scripts"
+    position: "menubar"
+    items:
+      - id: "new_script"
+        label: "&New Script..."
+        icon: ":/icons/new-script.png"
+        shortcut: "Ctrl+Shift+N"
+        action:
+          type: "new_script"
+          template: "basic"
+      
+      - id: "open_script"
+        label: "&Open Script..."
+        icon: ":/icons/open-script.png"
+        shortcut: "Ctrl+Shift+O"
+        action:
+          type: "open_script"
+          filter: "*.yaml;*.sh;*.js"
+      
+      - type: "separator"
+      
+      - id: "execute_current"
+        label: "&Execute Current Script"
+        icon: ":/icons/run-script.png"
+        shortcut: "Ctrl+Shift+X"
+        enabled_when: "script_loaded"
+        action:
+          type: "execute_script"
+          parameters:
+            confirm: true
+      
+      - id: "execute_on_selected"
+        label: "Execute on &Selected Files"
+        icon: ":/icons/run-selected.png"
+        shortcut: "Ctrl+Shift+S"
+        enabled_when: "files_selected && script_loaded"
+        action:
+          type: "execute_script"
+          parameters:
+            targets: "$SELECTED_FILES"
+            confirm: true
+      
+      - type: "separator"
+      
+      - id: "recent_scripts"
+        label: "&Recent Scripts"
+        type: "submenu"
+        dynamic: true
+        source: "recent_scripts_list"
+        max_items: 10
+      
+      - type: "separator"
+      
+      - id: "script_examples"
+        label: "&Examples"
+        type: "submenu"
+        items:
+          - id: "example_batch_rename"
+            label: "Batch Rename Files"
+            action:
+              type: "load_script"
+              script: |
+                # Batch rename selected files
+                operation: batch_rename
+                pattern: "*.txt"
+                rename_template: "{name}_backup_{date}.{ext}"
+                context:
+                  files: $SELECTED_FILES
+                  
+          - id: "example_copy_with_structure"
+            label: "Copy with Directory Structure"
+            action:
+              type: "load_script"
+              script: |
+                # Copy files preserving directory structure
+                operation: copy_tree
+                source: $CURRENT_DIR
+                destination: $OTHER_DIR
+                preserve_structure: true
+                
+          - id: "example_find_duplicates"
+            label: "Find Duplicate Files"
+            action:
+              type: "load_script"
+              script: |
+                # Find duplicate files by content
+                operation: find_duplicates
+                search_path: $CURRENT_DIR
+                compare_by: "checksum"
+                action: "list"
+
+context_menu:
+  - id: "script_operations"
+    label: "Script Operations"
+    appears_when: "files_selected"
+    items:
+      - id: "apply_script"
+        label: "Apply Script..."
+        icon: ":/icons/apply-script.png"
+        action:
+          type: "show_script_selector"
+          apply_to: "$SELECTED_FILES"
+      
+      - id: "quick_scripts"
+        label: "Quick Scripts"
+        type: "submenu"
+        items:
+          - id: "make_executable"
+            label: "Make Executable"
+            action:
+              type: "inline_script"
+              script: |
+                operation: chmod
+                permissions: "+x"
+                files: $SELECTED_FILES
+          
+          - id: "compress_selected"
+            label: "Compress Selected"
+            action:
+              type: "inline_script"
+              script: |
+                operation: archive
+                format: "zip"
+                output: "{dir}/archive_{timestamp}.zip"
+                files: $SELECTED_FILES
+
+toolbar:
+  - id: "script_toolbar"
+    name: "Script Engine"
+    position: "top"
+    visible: true
+    buttons:
+      - ref: "btn_execute_script"
+      - ref: "btn_batch_operations"
+      - type: "separator"
+      - id: "btn_script_editor"
+        label: "Script Editor"
+        icon: ":/icons/script-editor.png"
+        tooltip: "Open script editor"
+        action:
+          type: "show_panel"
+          panel: "script_editor"
+
+panels:
+  - id: "script_editor"
+    type: "dockable"
+    title: "Script Editor"
+    default_position: "bottom"
+    default_size: [800, 200]
+    features:
+      - syntax_highlighting: ["yaml", "shell", "javascript"]
+      - auto_complete: true
+      - line_numbers: true
+    toolbar:
+      - id: "save_script"
+        icon: ":/icons/save.png"
+        tooltip: "Save script"
+      - id: "run_script"
+        icon: ":/icons/run.png"
+        tooltip: "Run script"
+      - id: "validate_script"
+        icon: ":/icons/validate.png"
+        tooltip: "Validate syntax"
+
+shortcuts:
+  global:
+    - key: "Ctrl+Shift+X"
+      action: "execute_current_script"
+    - key: "Ctrl+Shift+E"
+      action: "toggle_script_editor"
+    - key: "F9"
+      action: "run_last_script"
+
+# Script engine configuration
+engine:
+  allowed_operations:
+    - copy
+    - move
+    - delete
+    - rename
+    - chmod
+    - mkdir
+    - archive
+    - search
+    - batch_rename
+    
+  security:
+    sandbox_mode: false
+    confirm_destructive: true
+    max_file_operations: 1000
+    timeout_seconds: 300
+    
+  variables:
+    - name: "ACTIVE_PANEL"
+      description: "Currently focused panel"
+      type: "panel_reference"
+    - name: "SELECTED_FILES"
+      description: "Array of selected files"
+      type: "file_array"
+    - name: "CURRENT_DIR"
+      description: "Current directory of active panel"
+      type: "directory_path"
+    - name: "OTHER_DIR"
+      description: "Directory of non-active panel"
+      type: "directory_path"
+    - name: "CLIPBOARD"
+      description: "Current clipboard contents"
+      type: "file_array"

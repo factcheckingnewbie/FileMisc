@@ -1,0 +1,42 @@
+# Example script that would be executed by the button
+name: "Organize Files by Type"
+description: "Organizes selected files into subdirectories based on their type"
+version: 1.0
+
+# Input validation
+requires:
+  - files_selected: true
+  - min_files: 1
+  - writable_directory: true
+
+# Main script
+script:
+  # Create directories for each file type
+  - operation: mkdir
+    directories:
+      - "$CURRENT_DIR/Documents"
+      - "$CURRENT_DIR/Images"
+      - "$CURRENT_DIR/Videos"
+      - "$CURRENT_DIR/Archives"
+      - "$CURRENT_DIR/Other"
+    
+  # Move files based on extension
+  - operation: batch_move
+    rules:
+      - pattern: "*.{doc,docx,pdf,txt,odt}"
+        destination: "$CURRENT_DIR/Documents"
+      - pattern: "*.{jpg,jpeg,png,gif,bmp,svg}"
+        destination: "$CURRENT_DIR/Images"
+      - pattern: "*.{mp4,avi,mkv,mov,wmv}"
+        destination: "$CURRENT_DIR/Videos"
+      - pattern: "*.{zip,rar,7z,tar,gz}"
+        destination: "$CURRENT_DIR/Archives"
+      - pattern: "*"
+        destination: "$CURRENT_DIR/Other"
+    source_files: $SELECTED_FILES
+    
+  # Report results
+  - operation: show_message
+    title: "Organization Complete"
+    message: "Files have been organized into subdirectories"
+    details: $LAST_OPERATION.summary
