@@ -1,0 +1,1213 @@
+{
+  "type": 8,
+  "raw_line": "",
+  "indent": 0,
+  "name": "root",
+  "children": [
+    {
+      "type": 6,
+      "raw_line": "Window \"Shell Commander\" width:1024 height:768",
+      "indent": 0,
+      "name": "Window \"Shell Commander\" width",
+      "value": "1024 height:768"
+    },
+    {
+      "type": 5,
+      "raw_line": "",
+      "indent": 0
+    },
+    {
+      "type": 6,
+      "raw_line": "Panel menubar position:top color:green",
+      "indent": 0,
+      "name": "Panel menubar position",
+      "value": "top color:green"
+    },
+    {
+      "type": 9,
+      "raw_line": "    FoldableMenu \"File\"",
+      "indent": 4,
+      "name": "    FoldableMenu \"File\"",
+      "children": [
+        {
+          "type": 6,
+          "raw_line": "        Item \"Open Script\" action:open_script shortcut:Ctrl+O icon:file-open",
+          "indent": 8,
+          "name": "        Item \"Open Script\" action",
+          "value": "open_script shortcut:Ctrl+O icon:file-open"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"Save Script\" action:save_script shortcut:Ctrl+S icon:file-save",
+          "indent": 8,
+          "name": "        Item \"Save Script\" action",
+          "value": "save_script shortcut:Ctrl+S icon:file-save"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"Save As\" action:save_script_as shortcut:Ctrl+Shift+S icon:file-save-as",
+          "indent": 8,
+          "name": "        Item \"Save As\" action",
+          "value": "save_script_as shortcut:Ctrl+Shift+S icon:file-save-as"
+        },
+        {
+          "type": 9,
+          "raw_line": "        Separator",
+          "indent": 8,
+          "name": "        Separator",
+          "children": [
+            {
+              "type": 6,
+              "raw_line": "        Item \"Exit\" action:exit_app shortcut:Ctrl+Q icon:app-exit",
+              "indent": 8,
+              "name": "        Item \"Exit\" action",
+              "value": "exit_app shortcut:Ctrl+Q icon:app-exit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 9,
+      "raw_line": "    FoldableMenu \"Edit\"",
+      "indent": 4,
+      "name": "    FoldableMenu \"Edit\"",
+      "children": [
+        {
+          "type": 6,
+          "raw_line": "        Item \"Undo\" action:undo shortcut:Ctrl+Z icon:edit-undo",
+          "indent": 8,
+          "name": "        Item \"Undo\" action",
+          "value": "undo shortcut:Ctrl+Z icon:edit-undo"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"Redo\" action:redo shortcut:Ctrl+Y icon:edit-redo",
+          "indent": 8,
+          "name": "        Item \"Redo\" action",
+          "value": "redo shortcut:Ctrl+Y icon:edit-redo"
+        },
+        {
+          "type": 9,
+          "raw_line": "        Separator",
+          "indent": 8,
+          "name": "        Separator",
+          "children": [
+            {
+              "type": 6,
+              "raw_line": "        Item \"Cut\" action:cut shortcut:Ctrl+X icon:edit-cut",
+              "indent": 8,
+              "name": "        Item \"Cut\" action",
+              "value": "cut shortcut:Ctrl+X icon:edit-cut"
+            },
+            {
+              "type": 6,
+              "raw_line": "        Item \"Copy\" action:copy shortcut:Ctrl+C icon:edit-copy",
+              "indent": 8,
+              "name": "        Item \"Copy\" action",
+              "value": "copy shortcut:Ctrl+C icon:edit-copy"
+            },
+            {
+              "type": 6,
+              "raw_line": "        Item \"Paste\" action:paste shortcut:Ctrl+V icon:edit-paste",
+              "indent": 8,
+              "name": "        Item \"Paste\" action",
+              "value": "paste shortcut:Ctrl+V icon:edit-paste"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 9,
+      "raw_line": "    FoldableMenu \"Commands\"",
+      "indent": 4,
+      "name": "    FoldableMenu \"Commands\"",
+      "children": [
+        {
+          "type": 9,
+          "raw_line": "        Submenu \"Shell\"",
+          "indent": 8,
+          "name": "        Submenu \"Shell\"",
+          "children": [
+            {
+              "type": 6,
+              "raw_line": "            Item \"Execute Command\" action:show_exec_dialog shortcut:Ctrl+E icon:terminal",
+              "indent": 12,
+              "name": "            Item \"Execute Command\" action",
+              "value": "show_exec_dialog shortcut:Ctrl+E icon:terminal"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"Set Environment\" action:show_env_dialog icon:settings",
+              "indent": 12,
+              "name": "            Item \"Set Environment\" action",
+              "value": "show_env_dialog icon:settings"
+            }
+          ]
+        },
+        {
+          "type": 9,
+          "raw_line": "        Submenu \"Files\"",
+          "indent": 8,
+          "name": "        Submenu \"Files\"",
+          "children": [
+            {
+              "type": 6,
+              "raw_line": "            Item \"List Files\" action:show_ls_dialog shortcut:Ctrl+L icon:folder",
+              "indent": 12,
+              "name": "            Item \"List Files\" action",
+              "value": "show_ls_dialog shortcut:Ctrl+L icon:folder"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"Find Files\" action:show_find_dialog shortcut:Ctrl+F icon:search",
+              "indent": 12,
+              "name": "            Item \"Find Files\" action",
+              "value": "show_find_dialog shortcut:Ctrl+F icon:search"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"Search Pattern\" action:show_grep_dialog shortcut:Ctrl+G icon:filter",
+              "indent": 12,
+              "name": "            Item \"Search Pattern\" action",
+              "value": "show_grep_dialog shortcut:Ctrl+G icon:filter"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"Transform (sed)\" action:show_sed_dialog icon:transform",
+              "indent": 12,
+              "name": "            Item \"Transform (sed)\" action",
+              "value": "show_sed_dialog icon:transform"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"Process (awk)\" action:show_awk_dialog icon:code",
+              "indent": 12,
+              "name": "            Item \"Process (awk)\" action",
+              "value": "show_awk_dialog icon:code"
+            }
+          ]
+        },
+        {
+          "type": 9,
+          "raw_line": "        Submenu \"System\"",
+          "indent": 8,
+          "name": "        Submenu \"System\"",
+          "children": [
+            {
+              "type": 6,
+              "raw_line": "            Item \"Process List\" action:show_ps_dialog shortcut:Ctrl+P icon:list",
+              "indent": 12,
+              "name": "            Item \"Process List\" action",
+              "value": "show_ps_dialog shortcut:Ctrl+P icon:list"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"Kill Process\" action:show_kill_dialog icon:stop",
+              "indent": 12,
+              "name": "            Item \"Kill Process\" action",
+              "value": "show_kill_dialog icon:stop"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"SSH Command\" action:show_ssh_dialog icon:network",
+              "indent": 12,
+              "name": "            Item \"SSH Command\" action",
+              "value": "show_ssh_dialog icon:network"
+            },
+            {
+              "type": 6,
+              "raw_line": "            Item \"HTTP Request\" action:show_curl_dialog icon:download",
+              "indent": 12,
+              "name": "            Item \"HTTP Request\" action",
+              "value": "show_curl_dialog icon:download"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 9,
+      "raw_line": "    FoldableMenu \"Flows\"",
+      "indent": 4,
+      "name": "    FoldableMenu \"Flows\"",
+      "children": [
+        {
+          "type": 6,
+          "raw_line": "        Item \"Clean Logs\" action:run_clean_logs icon:broom",
+          "indent": 8,
+          "name": "        Item \"Clean Logs\" action",
+          "value": "run_clean_logs icon:broom"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"Remote Backup\" action:show_backup_dialog icon:backup",
+          "indent": 8,
+          "name": "        Item \"Remote Backup\" action",
+          "value": "show_backup_dialog icon:backup"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"API Monitor\" action:show_monitor_dialog icon:monitor",
+          "indent": 8,
+          "name": "        Item \"API Monitor\" action",
+          "value": "show_monitor_dialog icon:monitor"
+        },
+        {
+          "type": 9,
+          "raw_line": "        Separator",
+          "indent": 8,
+          "name": "        Separator",
+          "children": [
+            {
+              "type": 6,
+              "raw_line": "        Item \"Flow Editor\" action:show_flow_editor shortcut:Ctrl+Shift+F icon:flow",
+              "indent": 8,
+              "name": "        Item \"Flow Editor\" action",
+              "value": "show_flow_editor shortcut:Ctrl+Shift+F icon:flow"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 9,
+      "raw_line": "    FoldableMenu \"View\"",
+      "indent": 4,
+      "name": "    FoldableMenu \"View\"",
+      "children": [
+        {
+          "type": 6,
+          "raw_line": "        Item \"Show Output\" action:toggle_output checked:true",
+          "indent": 8,
+          "name": "        Item \"Show Output\" action",
+          "value": "toggle_output checked:true"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"Show History\" action:toggle_history checked:true",
+          "indent": 8,
+          "name": "        Item \"Show History\" action",
+          "value": "toggle_history checked:true"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"Show Variables\" action:toggle_variables checked:false",
+          "indent": 8,
+          "name": "        Item \"Show Variables\" action",
+          "value": "toggle_variables checked:false"
+        }
+      ]
+    },
+    {
+      "type": 9,
+      "raw_line": "    FoldableMenu \"Help\"",
+      "indent": 4,
+      "name": "    FoldableMenu \"Help\"",
+      "children": [
+        {
+          "type": 6,
+          "raw_line": "        Item \"Command Reference\" action:show_commands",
+          "indent": 8,
+          "name": "        Item \"Command Reference\" action",
+          "value": "show_commands"
+        },
+        {
+          "type": 6,
+          "raw_line": "        Item \"About\" action:show_about",
+          "indent": 8,
+          "name": "        Item \"About\" action",
+          "value": "show_about"
+        },
+        {
+          "type": 5,
+          "raw_line": "",
+          "indent": 0
+        },
+        {
+          "type": 6,
+          "raw_line": "Panel toolbar position:top color:lightgray",
+          "indent": 0,
+          "name": "Panel toolbar position",
+          "value": "top color:lightgray"
+        },
+        {
+          "type": 6,
+          "raw_line": "    Button \"Execute\" action:quick_exec icon:play",
+          "indent": 4,
+          "name": "    Button \"Execute\" action",
+          "value": "quick_exec icon:play"
+        },
+        {
+          "type": 6,
+          "raw_line": "    Button \"List Files\" action:show_ls_dialog icon:folder",
+          "indent": 4,
+          "name": "    Button \"List Files\" action",
+          "value": "show_ls_dialog icon:folder"
+        },
+        {
+          "type": 6,
+          "raw_line": "    Button \"Find\" action:show_find_dialog icon:search",
+          "indent": 4,
+          "name": "    Button \"Find\" action",
+          "value": "show_find_dialog icon:search"
+        },
+        {
+          "type": 6,
+          "raw_line": "    Button \"SSH\" action:show_ssh_dialog icon:network",
+          "indent": 4,
+          "name": "    Button \"SSH\" action",
+          "value": "show_ssh_dialog icon:network"
+        }
+      ]
+    },
+    {
+      "type": 9,
+      "raw_line": "    Separator",
+      "indent": 4,
+      "name": "    Separator",
+      "children": [
+        {
+          "type": 6,
+          "raw_line": "    Button \"Stop\" action:stop_current icon:stop enabled:false",
+          "indent": 4,
+          "name": "    Button \"Stop\" action",
+          "value": "stop_current icon:stop enabled:false"
+        },
+        {
+          "type": 6,
+          "raw_line": "    Button \"Clear\" action:clear_output icon:clear",
+          "indent": 4,
+          "name": "    Button \"Clear\" action",
+          "value": "clear_output icon:clear"
+        },
+        {
+          "type": 5,
+          "raw_line": "",
+          "indent": 0
+        },
+        {
+          "type": 6,
+          "raw_line": "Panel splitter orientation:horizontal sizes:250,774",
+          "indent": 0,
+          "name": "Panel splitter orientation",
+          "value": "horizontal sizes:250,774"
+        },
+        {
+          "type": 6,
+          "raw_line": "    Panel sidebar color:darkgray",
+          "indent": 4,
+          "name": "    Panel sidebar color",
+          "value": "darkgray"
+        },
+        {
+          "type": 9,
+          "raw_line": "        TabView",
+          "indent": 8,
+          "name": "        TabView",
+          "children": [
+            {
+              "type": 9,
+              "raw_line": "            Tab \"History\"",
+              "indent": 12,
+              "name": "            Tab \"History\"",
+              "children": [
+                {
+                  "type": 6,
+                  "raw_line": "                List history_list action:replay_command",
+                  "indent": 16,
+                  "name": "                List history_list action",
+                  "value": "replay_command"
+                }
+              ]
+            },
+            {
+              "type": 9,
+              "raw_line": "            Tab \"Variables\"",
+              "indent": 12,
+              "name": "            Tab \"Variables\"",
+              "children": [
+                {
+                  "type": 9,
+                  "raw_line": "                Tree variable_tree",
+                  "indent": 16,
+                  "name": "                Tree variable_tree"
+                }
+              ]
+            },
+            {
+              "type": 9,
+              "raw_line": "            Tab \"Flows\"",
+              "indent": 12,
+              "name": "            Tab \"Flows\"",
+              "children": [
+                {
+                  "type": 6,
+                  "raw_line": "                List flow_list action:run_flow",
+                  "indent": 16,
+                  "name": "                List flow_list action",
+                  "value": "run_flow"
+                },
+                {
+                  "type": 5,
+                  "raw_line": "    ",
+                  "indent": 4
+                },
+                {
+                  "type": 6,
+                  "raw_line": "    Panel splitter orientation:vertical sizes:500,268",
+                  "indent": 4,
+                  "name": "    Panel splitter orientation",
+                  "value": "vertical sizes:500,268"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": 9,
+          "raw_line": "        Panel editor",
+          "indent": 8,
+          "name": "        Panel editor",
+          "children": [
+            {
+              "type": 9,
+              "raw_line": "            TabView",
+              "indent": 12,
+              "name": "            TabView",
+              "children": [
+                {
+                  "type": 9,
+                  "raw_line": "                Tab \"Command\"",
+                  "indent": 16,
+                  "name": "                Tab \"Command\"",
+                  "children": [
+                    {
+                      "type": 6,
+                      "raw_line": "                    TextArea command_input syntax:shell",
+                      "indent": 20,
+                      "name": "                    TextArea command_input syntax",
+                      "value": "shell"
+                    }
+                  ]
+                },
+                {
+                  "type": 9,
+                  "raw_line": "                Tab \"Script\"",
+                  "indent": 16,
+                  "name": "                Tab \"Script\"",
+                  "children": [
+                    {
+                      "type": 6,
+                      "raw_line": "                    TextArea script_editor syntax:dsl",
+                      "indent": 20,
+                      "name": "                    TextArea script_editor syntax",
+                      "value": "dsl"
+                    }
+                  ]
+                },
+                {
+                  "type": 9,
+                  "raw_line": "                Tab \"Output\"",
+                  "indent": 16,
+                  "name": "                Tab \"Output\"",
+                  "children": [
+                    {
+                      "type": 6,
+                      "raw_line": "                    TextArea output_view readonly:true monospace:true",
+                      "indent": 20,
+                      "name": "                    TextArea output_view readonly",
+                      "value": "true monospace:true"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "        ",
+                      "indent": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": 9,
+          "raw_line": "        Panel bottom_tabs",
+          "indent": 8,
+          "name": "        Panel bottom_tabs",
+          "children": [
+            {
+              "type": 9,
+              "raw_line": "            TabView",
+              "indent": 12,
+              "name": "            TabView",
+              "children": [
+                {
+                  "type": 9,
+                  "raw_line": "                Tab \"Console\"",
+                  "indent": 16,
+                  "name": "                Tab \"Console\"",
+                  "children": [
+                    {
+                      "type": 6,
+                      "raw_line": "                    TextArea console_output readonly:true monospace:true color:black bgcolor:darkblue",
+                      "indent": 20,
+                      "name": "                    TextArea console_output readonly",
+                      "value": "true monospace:true color:black bgcolor:darkblue"
+                    }
+                  ]
+                },
+                {
+                  "type": 9,
+                  "raw_line": "                Tab \"Errors\"",
+                  "indent": 16,
+                  "name": "                Tab \"Errors\"",
+                  "children": [
+                    {
+                      "type": 6,
+                      "raw_line": "                    TextArea error_output readonly:true color:red",
+                      "indent": 20,
+                      "name": "                    TextArea error_output readonly",
+                      "value": "true color:red"
+                    }
+                  ]
+                },
+                {
+                  "type": 9,
+                  "raw_line": "                Tab \"Debug\"",
+                  "indent": 16,
+                  "name": "                Tab \"Debug\"",
+                  "children": [
+                    {
+                      "type": 6,
+                      "raw_line": "                    Table debug_table columns:\"Time,Command,Status,Duration\"",
+                      "indent": 20,
+                      "name": "                    Table debug_table columns",
+                      "value": "\"Time,Command,Status,Duration\""
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 4,
+                      "raw_line": "# Dialog definitions for commands",
+                      "indent": 0
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"Execute Command\" id:exec_dialog width:500 height:200",
+                      "indent": 0,
+                      "name": "Dialog \"Execute Command\" id",
+                      "value": "exec_dialog width:500 height:200"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Command:\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"Command",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextArea cmd_input position:10,35 width:480 height:100 monospace:true",
+                      "indent": 4,
+                      "name": "    TextArea cmd_input position",
+                      "value": "10,35 width:480 height:100 monospace:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Execute\" position:330,160 action:exec_command default:true",
+                      "indent": 4,
+                      "name": "    Button \"Execute\" position",
+                      "value": "330,160 action:exec_command default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:410,160 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "410,160 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"List Files\" id:ls_dialog width:400 height:150",
+                      "indent": 0,
+                      "name": "Dialog \"List Files\" id",
+                      "value": "ls_dialog width:400 height:150"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Directory:\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"Directory",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField dir_input position:10,35 width:380 placeholder:\"Leave empty for current\"",
+                      "indent": 4,
+                      "name": "    TextField dir_input position",
+                      "value": "10,35 width:380 placeholder:\"Leave empty for current\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Checkbox \"Show hidden\" id:show_hidden position:10,70",
+                      "indent": 4,
+                      "name": "    Checkbox \"Show hidden\" id",
+                      "value": "show_hidden position:10,70"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Checkbox \"Long format\" id:long_format position:150,70 checked:true",
+                      "indent": 4,
+                      "name": "    Checkbox \"Long format\" id",
+                      "value": "long_format position:150,70 checked:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"List\" position:230,110 action:exec_ls default:true",
+                      "indent": 4,
+                      "name": "    Button \"List\" position",
+                      "value": "230,110 action:exec_ls default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:310,110 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "310,110 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"Find Files\" id:find_dialog width:450 height:200",
+                      "indent": 0,
+                      "name": "Dialog \"Find Files\" id",
+                      "value": "find_dialog width:450 height:200"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Search Path:\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"Search Path",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField path_input position:10,35 width:430 value:\".\"",
+                      "indent": 4,
+                      "name": "    TextField path_input position",
+                      "value": "10,35 width:430 value:\".\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"File Pattern:\" position:10,70",
+                      "indent": 4,
+                      "name": "    Label \"File Pattern",
+                      "value": "\" position:10,70"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField pattern_input position:10,95 width:430 placeholder:\"*.log\"",
+                      "indent": 4,
+                      "name": "    TextField pattern_input position",
+                      "value": "10,95 width:430 placeholder:\"*.log\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Checkbox \"Case sensitive\" id:case_sensitive position:10,130",
+                      "indent": 4,
+                      "name": "    Checkbox \"Case sensitive\" id",
+                      "value": "case_sensitive position:10,130"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Find\" position:280,160 action:exec_find default:true",
+                      "indent": 4,
+                      "name": "    Button \"Find\" position",
+                      "value": "280,160 action:exec_find default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:360,160 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "360,160 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"Search Pattern\" id:grep_dialog width:500 height:250",
+                      "indent": 0,
+                      "name": "Dialog \"Search Pattern\" id",
+                      "value": "grep_dialog width:500 height:250"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Pattern (regex):\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"Pattern (regex)",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField grep_pattern position:10,35 width:480",
+                      "indent": 4,
+                      "name": "    TextField grep_pattern position",
+                      "value": "10,35 width:480"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Input Source:\" position:10,70",
+                      "indent": 4,
+                      "name": "    Label \"Input Source",
+                      "value": "\" position:10,70"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    RadioGroup input_source position:10,95",
+                      "indent": 4,
+                      "name": "    RadioGroup input_source position",
+                      "value": "10,95"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Radio \"From variable\" value:variable checked:true",
+                      "indent": 8,
+                      "name": "        Radio \"From variable\" value",
+                      "value": "variable checked:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Radio \"From file\" value:file",
+                      "indent": 8,
+                      "name": "        Radio \"From file\" value",
+                      "value": "file"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Radio \"From last output\" value:pipe",
+                      "indent": 8,
+                      "name": "        Radio \"From last output\" value",
+                      "value": "pipe"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    ComboBox var_select position:150,95 width:200 items:$variables visible:true",
+                      "indent": 4,
+                      "name": "    ComboBox var_select position",
+                      "value": "150,95 width:200 items:$variables visible:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField file_select position:150,95 width:200 visible:false",
+                      "indent": 4,
+                      "name": "    TextField file_select position",
+                      "value": "150,95 width:200 visible:false"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Checkbox \"Case insensitive\" id:case_insensitive position:10,130",
+                      "indent": 4,
+                      "name": "    Checkbox \"Case insensitive\" id",
+                      "value": "case_insensitive position:10,130"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Checkbox \"Invert match\" id:invert_match position:150,130",
+                      "indent": 4,
+                      "name": "    Checkbox \"Invert match\" id",
+                      "value": "invert_match position:150,130"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Search\" position:340,210 action:exec_grep default:true",
+                      "indent": 4,
+                      "name": "    Button \"Search\" position",
+                      "value": "340,210 action:exec_grep default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:420,210 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "420,210 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"SSH Command\" id:ssh_dialog width:500 height:300",
+                      "indent": 0,
+                      "name": "Dialog \"SSH Command\" id",
+                      "value": "ssh_dialog width:500 height:300"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Host:\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"Host",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField host_input position:10,35 width:480 placeholder:\"user@hostname\"",
+                      "indent": 4,
+                      "name": "    TextField host_input position",
+                      "value": "10,35 width:480 placeholder:\"user@hostname\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Command:\" position:10,70",
+                      "indent": 4,
+                      "name": "    Label \"Command",
+                      "value": "\" position:10,70"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextArea ssh_cmd position:10,95 width:480 height:100",
+                      "indent": 4,
+                      "name": "    TextArea ssh_cmd position",
+                      "value": "10,95 width:480 height:100"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Checkbox \"Use key\" id:use_key position:10,205 checked:true",
+                      "indent": 4,
+                      "name": "    Checkbox \"Use key\" id",
+                      "value": "use_key position:10,205 checked:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField key_path position:100,205 width:300 placeholder:\"~/.ssh/id_rsa\"",
+                      "indent": 4,
+                      "name": "    TextField key_path position",
+                      "value": "100,205 width:300 placeholder:\"~/.ssh/id_rsa\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Connect\" position:340,260 action:exec_ssh default:true",
+                      "indent": 4,
+                      "name": "    Button \"Connect\" position",
+                      "value": "340,260 action:exec_ssh default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:420,260 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "420,260 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"Remote Backup\" id:backup_dialog width:550 height:350",
+                      "indent": 0,
+                      "name": "Dialog \"Remote Backup\" id",
+                      "value": "backup_dialog width:550 height:350"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"SSH Host:\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"SSH Host",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField backup_host position:10,35 width:530",
+                      "indent": 4,
+                      "name": "    TextField backup_host position",
+                      "value": "10,35 width:530"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Source Path:\" position:10,70",
+                      "indent": 4,
+                      "name": "    Label \"Source Path",
+                      "value": "\" position:10,70"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField backup_src position:10,95 width:530 placeholder:\"/path/to/source\"",
+                      "indent": 4,
+                      "name": "    TextField backup_src position",
+                      "value": "10,95 width:530 placeholder:\"/path/to/source\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Destination:\" position:10,130",
+                      "indent": 4,
+                      "name": "    Label \"Destination",
+                      "value": "\" position:10,130"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField backup_dst position:10,155 width:530 placeholder:\"/backup/location\"",
+                      "indent": 4,
+                      "name": "    TextField backup_dst position",
+                      "value": "10,155 width:530 placeholder:\"/backup/location\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    GroupBox \"Options\" position:10,195 width:530 height:100",
+                      "indent": 4,
+                      "name": "    GroupBox \"Options\" position",
+                      "value": "10,195 width:530 height:100"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Checkbox \"Compress\" id:compress position:20,215 checked:true",
+                      "indent": 8,
+                      "name": "        Checkbox \"Compress\" id",
+                      "value": "compress position:20,215 checked:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Checkbox \"Incremental\" id:incremental position:150,215",
+                      "indent": 8,
+                      "name": "        Checkbox \"Incremental\" id",
+                      "value": "incremental position:150,215"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Checkbox \"Delete removed\" id:delete_removed position:280,215",
+                      "indent": 8,
+                      "name": "        Checkbox \"Delete removed\" id",
+                      "value": "delete_removed position:280,215"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Label \"Exclude:\" position:20,245",
+                      "indent": 8,
+                      "name": "        Label \"Exclude",
+                      "value": "\" position:20,245"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        TextField exclude_pattern position:80,245 width:200 placeholder:\"*.tmp,*.log\"",
+                      "indent": 8,
+                      "name": "        TextField exclude_pattern position",
+                      "value": "80,245 width:200 placeholder:\"*.tmp,*.log\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Start Backup\" position:380,310 action:exec_backup default:true",
+                      "indent": 4,
+                      "name": "    Button \"Start Backup\" position",
+                      "value": "380,310 action:exec_backup default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:470,310 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "470,310 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Dialog \"API Monitor\" id:monitor_dialog width:500 height:400",
+                      "indent": 0,
+                      "name": "Dialog \"API Monitor\" id",
+                      "value": "monitor_dialog width:500 height:400"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"API URL:\" position:10,10",
+                      "indent": 4,
+                      "name": "    Label \"API URL",
+                      "value": "\" position:10,10"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField api_url position:10,35 width:480",
+                      "indent": 4,
+                      "name": "    TextField api_url position",
+                      "value": "10,35 width:480"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Search Pattern:\" position:10,70",
+                      "indent": 4,
+                      "name": "    Label \"Search Pattern",
+                      "value": "\" position:10,70"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    TextField api_pattern position:10,95 width:480",
+                      "indent": 4,
+                      "name": "    TextField api_pattern position",
+                      "value": "10,95 width:480"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Check Interval (seconds):\" position:10,130",
+                      "indent": 4,
+                      "name": "    Label \"Check Interval (seconds)",
+                      "value": "\" position:10,130"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    SpinBox interval position:10,155 min:10 max:3600 value:60",
+                      "indent": 4,
+                      "name": "    SpinBox interval position",
+                      "value": "10,155 min:10 max:3600 value:60"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    GroupBox \"Actions\" position:10,195 width:480 height:120",
+                      "indent": 4,
+                      "name": "    GroupBox \"Actions\" position",
+                      "value": "10,195 width:480 height:120"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Checkbox \"Desktop notification\" id:notify position:20,215 checked:true",
+                      "indent": 8,
+                      "name": "        Checkbox \"Desktop notification\" id",
+                      "value": "notify position:20,215 checked:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Checkbox \"Log to file\" id:log_file position:20,240",
+                      "indent": 8,
+                      "name": "        Checkbox \"Log to file\" id",
+                      "value": "log_file position:20,240"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        TextField log_path position:120,240 width:250 placeholder:\"/tmp/monitor.log\"",
+                      "indent": 8,
+                      "name": "        TextField log_path position",
+                      "value": "120,240 width:250 placeholder:\"/tmp/monitor.log\""
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        Checkbox \"Execute command\" id:exec_on_match position:20,265",
+                      "indent": 8,
+                      "name": "        Checkbox \"Execute command\" id",
+                      "value": "exec_on_match position:20,265"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "        TextField match_cmd position:120,265 width:250",
+                      "indent": 8,
+                      "name": "        TextField match_cmd position",
+                      "value": "120,265 width:250"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Start Monitor\" position:330,360 action:start_monitor default:true",
+                      "indent": 4,
+                      "name": "    Button \"Start Monitor\" position",
+                      "value": "330,360 action:start_monitor default:true"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Button \"Cancel\" position:420,360 action:close_dialog",
+                      "indent": 4,
+                      "name": "    Button \"Cancel\" position",
+                      "value": "420,360 action:close_dialog"
+                    },
+                    {
+                      "type": 5,
+                      "raw_line": "",
+                      "indent": 0
+                    },
+                    {
+                      "type": 4,
+                      "raw_line": "# Status bar at bottom",
+                      "indent": 0
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "Panel statusbar position:bottom height:25 color:gray",
+                      "indent": 0,
+                      "name": "Panel statusbar position",
+                      "value": "bottom height:25 color:gray"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Ready\" id:status_text position:5,3",
+                      "indent": 4,
+                      "name": "    Label \"Ready\" id",
+                      "value": "status_text position:5,3"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Separator position:200,0",
+                      "indent": 4,
+                      "name": "    Separator position",
+                      "value": "200,0"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"Variables: 0\" id:var_count position:210,3",
+                      "indent": 4,
+                      "name": "    Label \"Variables",
+                      "value": " 0\" id:var_count position:210,3"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Separator position:300,0",
+                      "indent": 4,
+                      "name": "    Separator position",
+                      "value": "300,0"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    Label \"History: 0\" id:history_count position:310,3",
+                      "indent": 4,
+                      "name": "    Label \"History",
+                      "value": " 0\" id:history_count position:310,3"
+                    },
+                    {
+                      "type": 6,
+                      "raw_line": "    ProgressBar id:progress position:right width:150 visible:false",
+                      "indent": 4,
+                      "name": "    ProgressBar id",
+                      "value": "progress position:right width:150 visible:false"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

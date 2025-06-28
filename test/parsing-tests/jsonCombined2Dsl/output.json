@@ -1,0 +1,245 @@
+{
+    "ui": [
+        {
+            "height": 600,
+            "title": "File Manager",
+            "type": "Window",
+            "width": 800
+        },
+        {
+            "children": [
+                {
+                    "children": [
+                        {
+                            "action": "open_file",
+                            "icon": "file-open",
+                            "shortcut": "Ctrl+O",
+                            "text": "Open File",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "save_file",
+                            "icon": "file-save",
+                            "shortcut": "Ctrl+S",
+                            "text": "Save",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "save_as_file",
+                            "icon": "file-save-as",
+                            "shortcut": "Ctrl+Shift+S",
+                            "text": "Save As",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "close_file",
+                            "icon": "file-close",
+                            "shortcut": "Ctrl+W",
+                            "text": "Close",
+                            "type": "Item"
+                        },
+                        {
+                            "type": "Separator"
+                        },
+                        {
+                            "action": "exit_app",
+                            "icon": "app-exit",
+                            "shortcut": "Ctrl+Q",
+                            "text": "Exit",
+                            "type": "Item"
+                        }
+                    ],
+                    "title": "File",
+                    "type": "FoldableMenu"
+                },
+                {
+                    "children": [
+                        {
+                            "action": "undo",
+                            "icon": "edit-undo",
+                            "shortcut": "Ctrl+Z",
+                            "text": "Undo",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "redo",
+                            "icon": "edit-redo",
+                            "shortcut": "Ctrl+Y",
+                            "text": "Redo",
+                            "type": "Item"
+                        },
+                        {
+                            "type": "Separator"
+                        },
+                        {
+                            "action": "cut",
+                            "icon": "edit-cut",
+                            "shortcut": "Ctrl+X",
+                            "text": "Cut",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "copy",
+                            "icon": "edit-copy",
+                            "shortcut": "Ctrl+C",
+                            "text": "Copy",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "paste",
+                            "icon": "edit-paste",
+                            "shortcut": "Ctrl+V",
+                            "text": "Paste",
+                            "type": "Item"
+                        }
+                    ],
+                    "title": "Edit",
+                    "type": "FoldableMenu"
+                },
+                {
+                    "children": [
+                        {
+                            "action": "toggle_sidebar",
+                            "checked": true,
+                            "text": "Show Sidebar",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "toggle_preview",
+                            "checked": true,
+                            "text": "Show Preview",
+                            "type": "Item"
+                        }
+                    ],
+                    "title": "View",
+                    "type": "FoldableMenu"
+                },
+                {
+                    "children": [
+                        {
+                            "action": "list_files",
+                            "icon": "list",
+                            "shortcut": "Ctrl+L",
+                            "text": "List Files",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "find_pattern",
+                            "icon": "search",
+                            "shortcut": "Ctrl+F",
+                            "text": "Find Pattern",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "count_matches",
+                            "icon": "numbers",
+                            "shortcut": "Ctrl+M",
+                            "text": "Count Matches",
+                            "type": "Item"
+                        }
+                    ],
+                    "title": "Tools",
+                    "type": "FoldableMenu"
+                },
+                {
+                    "children": [
+                        {
+                            "action": "show_about",
+                            "text": "About",
+                            "type": "Item"
+                        },
+                        {
+                            "action": "show_help",
+                            "shortcut": "F1",
+                            "text": "Help",
+                            "type": "Item"
+                        }
+                    ],
+                    "title": "Help",
+                    "type": "FoldableMenu"
+                }
+            ],
+            "color": "green",
+            "position": "top",
+            "subtype": "menubar",
+            "type": "Panel"
+        },
+        {
+            "orientation": "horizontal",
+            "sizes": 300,
+            "subtype": "splitter",
+            "type": "Panel"
+        },
+        {
+            "children": [
+                {
+                    "action": "open_file",
+                    "icon": "file-open",
+                    "text": "Open",
+                    "type": "Button"
+                },
+                {
+                    "action": "save_file",
+                    "icon": "file-save",
+                    "text": "Save",
+                    "type": "Button"
+                },
+                {
+                    "action": "copy",
+                    "icon": "edit-copy",
+                    "text": "Copy",
+                    "type": "Button"
+                },
+                {
+                    "action": "paste",
+                    "icon": "edit-paste",
+                    "text": "Paste",
+                    "type": "Button"
+                },
+                {
+                    "action": "show_about",
+                    "icon": "help",
+                    "text": "About",
+                    "type": "Button"
+                }
+            ],
+            "color": "lightgray",
+            "position": "top",
+            "subtype": "buttonbar",
+            "type": "Panel"
+        },
+        {
+            "children": [
+                {
+                    "children": [
+                        {
+                            "type": "Command"
+                        },
+                        {
+                            "type": "Command"
+                        },
+                        {
+                            "type": "Command"
+                        }
+                    ],
+                    "type": "Group"
+                },
+                {
+                    "children": [
+                        {
+                            "type": "Step"
+                        },
+                        {
+                            "type": "Step"
+                        },
+                        {
+                            "type": "Step"
+                        }
+                    ],
+                    "type": "Pipeline"
+                }
+            ],
+            "type": "Commands"
+        }
+    ]
+}

@@ -1,0 +1,1308 @@
+{
+  "children" : 
+  [
+    {
+      "attributes" : 
+      {
+        "height" : 768,
+        "width" : 1024
+      },
+      "name" : "Shell Commander",
+      "type" : "Window"
+    },
+    {
+      "attributes" : 
+      {
+        "color" : "green",
+        "menubar" : true,
+        "position" : "top"
+      },
+      "type" : "Panel"
+    },
+    {
+      "name" : "File",
+      "type" : "FoldableMenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "open_script",
+        "icon" : "file-open",
+        "shortcut" : "Ctrl+O"
+      },
+      "name" : "Open Script",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "save_script",
+        "icon" : "file-save",
+        "shortcut" : "Ctrl+S"
+      },
+      "name" : "Save Script",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "save_script_as",
+        "icon" : "file-save-as",
+        "shortcut" : "Ctrl+Shift+S"
+      },
+      "name" : "Save As",
+      "type" : "Item"
+    },
+    {
+      "type" : "Separator"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exit_app",
+        "icon" : "app-exit",
+        "shortcut" : "Ctrl+Q"
+      },
+      "name" : "Exit",
+      "type" : "Item"
+    },
+    {
+      "name" : "Edit",
+      "type" : "FoldableMenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "undo",
+        "icon" : "edit-undo",
+        "shortcut" : "Ctrl+Z"
+      },
+      "name" : "Undo",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "redo",
+        "icon" : "edit-redo",
+        "shortcut" : "Ctrl+Y"
+      },
+      "name" : "Redo",
+      "type" : "Item"
+    },
+    {
+      "type" : "Separator"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "cut",
+        "icon" : "edit-cut",
+        "shortcut" : "Ctrl+X"
+      },
+      "name" : "Cut",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "copy",
+        "icon" : "edit-copy",
+        "shortcut" : "Ctrl+C"
+      },
+      "name" : "Copy",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "paste",
+        "icon" : "edit-paste",
+        "shortcut" : "Ctrl+V"
+      },
+      "name" : "Paste",
+      "type" : "Item"
+    },
+    {
+      "name" : "Commands",
+      "type" : "FoldableMenu"
+    },
+    {
+      "name" : "Shell",
+      "type" : "Submenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_exec_dialog",
+        "icon" : "terminal",
+        "shortcut" : "Ctrl+E"
+      },
+      "name" : "Execute Command",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_env_dialog",
+        "icon" : "settings"
+      },
+      "name" : "Set Environment",
+      "type" : "Item"
+    },
+    {
+      "name" : "Files",
+      "type" : "Submenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_ls_dialog",
+        "icon" : "folder",
+        "shortcut" : "Ctrl+L"
+      },
+      "name" : "List Files",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_find_dialog",
+        "icon" : "search",
+        "shortcut" : "Ctrl+F"
+      },
+      "name" : "Find Files",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_grep_dialog",
+        "icon" : "filter",
+        "shortcut" : "Ctrl+G"
+      },
+      "name" : "Search Pattern",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_sed_dialog",
+        "icon" : "transform"
+      },
+      "name" : "Transform (sed)",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_awk_dialog",
+        "icon" : "code"
+      },
+      "name" : "Process (awk)",
+      "type" : "Item"
+    },
+    {
+      "name" : "System",
+      "type" : "Submenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_ps_dialog",
+        "icon" : "list",
+        "shortcut" : "Ctrl+P"
+      },
+      "name" : "Process List",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_kill_dialog",
+        "icon" : "stop"
+      },
+      "name" : "Kill Process",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_ssh_dialog",
+        "icon" : "network"
+      },
+      "name" : "SSH Command",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_curl_dialog",
+        "icon" : "download"
+      },
+      "name" : "HTTP Request",
+      "type" : "Item"
+    },
+    {
+      "name" : "Flows",
+      "type" : "FoldableMenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "run_clean_logs",
+        "icon" : "broom"
+      },
+      "name" : "Clean Logs",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_backup_dialog",
+        "icon" : "backup"
+      },
+      "name" : "Remote Backup",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_monitor_dialog",
+        "icon" : "monitor"
+      },
+      "name" : "API Monitor",
+      "type" : "Item"
+    },
+    {
+      "type" : "Separator"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_flow_editor",
+        "icon" : "flow",
+        "shortcut" : "Ctrl+Shift+F"
+      },
+      "name" : "Flow Editor",
+      "type" : "Item"
+    },
+    {
+      "name" : "View",
+      "type" : "FoldableMenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "toggle_output",
+        "checked" : true
+      },
+      "name" : "Show Output",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "toggle_history",
+        "checked" : true
+      },
+      "name" : "Show History",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "toggle_variables",
+        "checked" : false
+      },
+      "name" : "Show Variables",
+      "type" : "Item"
+    },
+    {
+      "name" : "Help",
+      "type" : "FoldableMenu"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_commands"
+      },
+      "name" : "Command Reference",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_about"
+      },
+      "name" : "About",
+      "type" : "Item"
+    },
+    {
+      "attributes" : 
+      {
+        "color" : "lightgray",
+        "position" : "top",
+        "toolbar" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "quick_exec",
+        "icon" : "play"
+      },
+      "name" : "Execute",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_ls_dialog",
+        "icon" : "folder"
+      },
+      "name" : "List Files",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_find_dialog",
+        "icon" : "search"
+      },
+      "name" : "Find",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "show_ssh_dialog",
+        "icon" : "network"
+      },
+      "name" : "SSH",
+      "type" : "Button"
+    },
+    {
+      "type" : "Separator"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "stop_current",
+        "enabled" : false,
+        "icon" : "stop"
+      },
+      "name" : "Stop",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "clear_output",
+        "icon" : "clear"
+      },
+      "name" : "Clear",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "orientation" : "horizontal",
+        "sizes" : 250,
+        "splitter" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "attributes" : 
+      {
+        "color" : "darkgray",
+        "sidebar" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "type" : "TabView"
+    },
+    {
+      "name" : "History",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "replay_command",
+        "history_list" : true
+      },
+      "type" : "List"
+    },
+    {
+      "name" : "Variables",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "variable_tree" : true
+      },
+      "type" : "Tree"
+    },
+    {
+      "name" : "Flows",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "run_flow",
+        "flow_list" : true
+      },
+      "type" : "List"
+    },
+    {
+      "attributes" : 
+      {
+        "orientation" : "vertical",
+        "sizes" : 500,
+        "splitter" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "attributes" : 
+      {
+        "editor" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "type" : "TabView"
+    },
+    {
+      "name" : "Command",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "command_input" : true,
+        "syntax" : "shell"
+      },
+      "type" : "TextArea"
+    },
+    {
+      "name" : "Script",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "script_editor" : true,
+        "syntax" : "dsl"
+      },
+      "type" : "TextArea"
+    },
+    {
+      "name" : "Output",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "monospace" : true,
+        "output_view" : true,
+        "readonly" : true
+      },
+      "type" : "TextArea"
+    },
+    {
+      "attributes" : 
+      {
+        "bottom_tabs" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "type" : "TabView"
+    },
+    {
+      "name" : "Console",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "bgcolor" : "darkblue",
+        "color" : "black",
+        "console_output" : true,
+        "monospace" : true,
+        "readonly" : true
+      },
+      "type" : "TextArea"
+    },
+    {
+      "name" : "Errors",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "color" : "red",
+        "error_output" : true,
+        "readonly" : true
+      },
+      "type" : "TextArea"
+    },
+    {
+      "name" : "Debug",
+      "type" : "Tab"
+    },
+    {
+      "attributes" : 
+      {
+        "columns" : "Time,Command,Status,Duration",
+        "debug_table" : true
+      },
+      "type" : "Table"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 200,
+        "id" : "exec_dialog",
+        "width" : 500
+      },
+      "name" : "Execute Command",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Command:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "cmd_input" : true,
+        "height" : 100,
+        "monospace" : true,
+        "position" : 10,
+        "width" : 480
+      },
+      "type" : "TextArea"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exec_command",
+        "default" : true,
+        "position" : 330
+      },
+      "name" : "Execute",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 410
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 150,
+        "id" : "ls_dialog",
+        "width" : 400
+      },
+      "name" : "List Files",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Directory:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "dir_input" : true,
+        "placeholder" : "Leave empty for current",
+        "position" : 10,
+        "width" : 380
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "show_hidden",
+        "position" : 10
+      },
+      "name" : "Show hidden",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "checked" : true,
+        "id" : "long_format",
+        "position" : 150
+      },
+      "name" : "Long format",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exec_ls",
+        "default" : true,
+        "position" : 230
+      },
+      "name" : "List",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 310
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 200,
+        "id" : "find_dialog",
+        "width" : 450
+      },
+      "name" : "Find Files",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Search Path:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "path_input" : true,
+        "position" : 10,
+        "value" : ".",
+        "width" : 430
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "File Pattern:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "pattern_input" : true,
+        "placeholder" : "*.log",
+        "position" : 10,
+        "width" : 430
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "case_sensitive",
+        "position" : 10
+      },
+      "name" : "Case sensitive",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exec_find",
+        "default" : true,
+        "position" : 280
+      },
+      "name" : "Find",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 360
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 250,
+        "id" : "grep_dialog",
+        "width" : 500
+      },
+      "name" : "Search Pattern",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Pattern (regex):",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "grep_pattern" : true,
+        "position" : 10,
+        "width" : 480
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Input Source:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "input_source" : true,
+        "position" : 10
+      },
+      "type" : "RadioGroup"
+    },
+    {
+      "attributes" : 
+      {
+        "checked" : true,
+        "value" : "variable"
+      },
+      "name" : "From variable",
+      "type" : "Radio"
+    },
+    {
+      "attributes" : 
+      {
+        "value" : "file"
+      },
+      "name" : "From file",
+      "type" : "Radio"
+    },
+    {
+      "attributes" : 
+      {
+        "value" : "pipe"
+      },
+      "name" : "From last output",
+      "type" : "Radio"
+    },
+    {
+      "attributes" : 
+      {
+        "items" : "$variables",
+        "position" : 150,
+        "var_select" : true,
+        "visible" : true,
+        "width" : 200
+      },
+      "type" : "ComboBox"
+    },
+    {
+      "attributes" : 
+      {
+        "file_select" : true,
+        "position" : 150,
+        "visible" : false,
+        "width" : 200
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "case_insensitive",
+        "position" : 10
+      },
+      "name" : "Case insensitive",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "invert_match",
+        "position" : 150
+      },
+      "name" : "Invert match",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exec_grep",
+        "default" : true,
+        "position" : 340
+      },
+      "name" : "Search",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 420
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 300,
+        "id" : "ssh_dialog",
+        "width" : 500
+      },
+      "name" : "SSH Command",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Host:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "host_input" : true,
+        "placeholder" : "user@hostname",
+        "position" : 10,
+        "width" : 480
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Command:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 100,
+        "position" : 10,
+        "ssh_cmd" : true,
+        "width" : 480
+      },
+      "type" : "TextArea"
+    },
+    {
+      "attributes" : 
+      {
+        "checked" : true,
+        "id" : "use_key",
+        "position" : 10
+      },
+      "name" : "Use key",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "key_path" : true,
+        "placeholder" : "~/.ssh/id_rsa",
+        "position" : 100,
+        "width" : 300
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exec_ssh",
+        "default" : true,
+        "position" : 340
+      },
+      "name" : "Connect",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 420
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 350,
+        "id" : "backup_dialog",
+        "width" : 550
+      },
+      "name" : "Remote Backup",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "SSH Host:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "backup_host" : true,
+        "position" : 10,
+        "width" : 530
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Source Path:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "backup_src" : true,
+        "placeholder" : "/path/to/source",
+        "position" : 10,
+        "width" : 530
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Destination:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "backup_dst" : true,
+        "placeholder" : "/backup/location",
+        "position" : 10,
+        "width" : 530
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 100,
+        "position" : 10,
+        "width" : 530
+      },
+      "name" : "Options",
+      "type" : "GroupBox"
+    },
+    {
+      "attributes" : 
+      {
+        "checked" : true,
+        "id" : "compress",
+        "position" : 20
+      },
+      "name" : "Compress",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "incremental",
+        "position" : 150
+      },
+      "name" : "Incremental",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "delete_removed",
+        "position" : 280
+      },
+      "name" : "Delete removed",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 20
+      },
+      "name" : "Exclude:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "exclude_pattern" : true,
+        "placeholder" : "*.tmp,*.log",
+        "position" : 80,
+        "width" : 200
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "exec_backup",
+        "default" : true,
+        "position" : 380
+      },
+      "name" : "Start Backup",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 470
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 400,
+        "id" : "monitor_dialog",
+        "width" : 500
+      },
+      "name" : "API Monitor",
+      "type" : "Dialog"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "API URL:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "api_url" : true,
+        "position" : 10,
+        "width" : 480
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Search Pattern:",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "api_pattern" : true,
+        "position" : 10,
+        "width" : 480
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 10
+      },
+      "name" : "Check Interval (seconds):",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "interval" : true,
+        "max" : 3600,
+        "min" : 10,
+        "position" : 10,
+        "value" : 60
+      },
+      "type" : "SpinBox"
+    },
+    {
+      "attributes" : 
+      {
+        "height" : 120,
+        "position" : 10,
+        "width" : 480
+      },
+      "name" : "Actions",
+      "type" : "GroupBox"
+    },
+    {
+      "attributes" : 
+      {
+        "checked" : true,
+        "id" : "notify",
+        "position" : 20
+      },
+      "name" : "Desktop notification",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "log_file",
+        "position" : 20
+      },
+      "name" : "Log to file",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "log_path" : true,
+        "placeholder" : "/tmp/monitor.log",
+        "position" : 120,
+        "width" : 250
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "exec_on_match",
+        "position" : 20
+      },
+      "name" : "Execute command",
+      "type" : "Checkbox"
+    },
+    {
+      "attributes" : 
+      {
+        "match_cmd" : true,
+        "position" : 120,
+        "width" : 250
+      },
+      "type" : "TextField"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "start_monitor",
+        "default" : true,
+        "position" : 330
+      },
+      "name" : "Start Monitor",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "action" : "close_dialog",
+        "position" : 420
+      },
+      "name" : "Cancel",
+      "type" : "Button"
+    },
+    {
+      "attributes" : 
+      {
+        "color" : "gray",
+        "height" : 25,
+        "position" : "bottom",
+        "statusbar" : true
+      },
+      "type" : "Panel"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "status_text",
+        "position" : 5
+      },
+      "name" : "Ready",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 200
+      },
+      "type" : "Separator"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "var_count",
+        "position" : 210
+      },
+      "name" : "Variables: 0",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "position" : 300
+      },
+      "type" : "Separator"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "history_count",
+        "position" : 310
+      },
+      "name" : "History: 0",
+      "type" : "Label"
+    },
+    {
+      "attributes" : 
+      {
+        "id" : "progress",
+        "position" : "right",
+        "visible" : false,
+        "width" : 150
+      },
+      "type" : "ProgressBar"
+    }
+  ],
+  "type" : "root"
+}
